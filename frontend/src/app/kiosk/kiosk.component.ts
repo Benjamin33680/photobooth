@@ -5,9 +5,9 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PhotoboothService, BoothState } from './photobooth.service';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-kiosk',
@@ -74,17 +74,12 @@ import { PhotoboothService, BoothState } from './photobooth.service';
 
         <!-- RESULT -->
         <div *ngSwitchCase="'result'" class="overlay-result">
-          <div class="result-actions">
+          <div class="result-hint-container">
             <p class="result-hint">Touchez pour recommencer</p>
-            <a
-              *ngIf="resultUrl"
-              [href]="resultUrl"
-              download
-              class="download-btn"
-              (click)="$event.stopPropagation()"
-            >
-              ↓ Télécharger
-            </a>
+          </div>
+          <div class="qr-container" *ngIf="qrCodeDataUrl">
+            <p class="qr-label">SCANNEZ CE QR CODE POUR TÉLÉCHARGER LA PHOTO</p>
+            <img [src]="qrCodeDataUrl" class="qr-code" alt="QR Code" />
           </div>
         </div>
 
@@ -335,14 +330,55 @@ import { PhotoboothService, BoothState } from './photobooth.service';
     /* RESULT */
     .overlay-result {
       position: absolute;
-      bottom: 0;
+      inset: 0;
+      pointer-events: all;
+    }
+
+    .result-hint-container {
+      position: absolute;
+      bottom: 40px;
       left: 0;
       right: 0;
-      padding: 40px;
-      background: linear-gradient(to top, rgba(5,5,16,0.9) 0%, transparent 100%);
       display: flex;
       justify-content: center;
-      pointer-events: all;
+    }
+
+    .result-hint {
+      font-size: 20px;
+      letter-spacing: 4px;
+      color: rgba(200, 210, 255, 0.7);
+      margin: 0;
+      text-transform: uppercase;
+      animation: blink 2s ease-in-out infinite;
+    }
+
+    .qr-container {
+      position: absolute;
+      bottom: 40px;
+      right: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: rgba(5, 5, 16, 0.85);
+      padding: 20px;
+      border: 1px solid rgba(128, 144, 255, 0.2);
+    }
+
+    .qr-code {
+      width: 220px;
+      height: 220px;
+    }
+
+    .qr-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: rgba(200, 210, 255, 0.7);
+      margin: 0;
+      text-transform: uppercase;
+      text-align: center;
+      max-width: 220px;
+      line-height: 1.6;
     }
 
     .result-actions {
@@ -426,8 +462,10 @@ export class KioskComponent implements OnInit, OnDestroy {
   isFlashing = false;
   errorMessage: string | null = null;
   photoRange = [0, 1, 2];
-  private _lastTap = 0;
+  qrCodeDataUrl: string | null = null;
+  hostname = window.location.hostname
 
+  private _lastTap = 0;
   private subs = new Subscription();
 
   constructor(
@@ -479,6 +517,18 @@ export class KioskComponent implements OnInit, OnDestroy {
       setTimeout(() => { this.errorMessage = null; this.cdr.markForCheck(); }, 4000);
       this.cdr.markForCheck();
     }));
+
+    this.subs.add(this.booth.resultUrl$.subscribe((u) => {
+      this.resultUrl = u;
+      // Extrait l'ID depuis l'URL /photos/strip_XXXXX_id.jpg
+      if (u) {
+        const filename = u.split('/').pop() ?? '';
+        const parts = filename.replace('.jpg', '').split('_');
+        const photoId = parts[parts.length - 1];
+        this.generateQrCode(photoId);
+      }
+      this.cdr.markForCheck();
+    }));
   }
 
   onScreenTap(): void {
@@ -502,6 +552,27 @@ export class KioskComponent implements OnInit, OnDestroy {
     this.isFlashing = true;
     this.cdr.markForCheck();
     setTimeout(() => { this.isFlashing = false; this.cdr.markForCheck(); }, 400);
+  }
+
+  async generateQrCode(photoId: string): Promise<void> {
+    // Force l'IP du Pi pour que le téléphone puisse accéder
+    const host = window.location.hostname === 'localhost'
+      ? '192.168.1.50'
+      : window.location.hostname;
+    const downloadUrl = `http://${host}:8000/api/gallery/${photoId}/download`;
+    try {
+      this.qrCodeDataUrl = await QRCode.toDataURL(downloadUrl, {
+        width: 200,
+        margin: 2,
+        color: {
+          dark: '#e0e6ff',
+          light: '#050510',
+        },
+      });
+      this.cdr.markForCheck();
+    } catch (e) {
+      console.error('QR code error', e);
+    }
   }
 
   ngOnDestroy(): void {
