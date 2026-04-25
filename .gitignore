@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+venv/
+.env
+backend/storage/photos/*.jpg
+backend/storage/photos/*.jpeg
+backend/storage/photos/*.png
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+.DS_Store
+Thumbs.db
+.vscode/
