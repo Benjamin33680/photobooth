@@ -54,7 +54,7 @@ import { FormsModule } from '@angular/forms';
       min-width: 340px;
     }
     .title {
-      font-size: 24px;
+      font-size: 20px;
       letter-spacing: 8px;
       color: #e0e6ff;
       font-weight: 400;
@@ -116,7 +116,7 @@ export class LoginComponent {
   loading = false;
   error = '';
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
 
   login(): void {
     if (!this.username || !this.password) return;

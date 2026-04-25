@@ -16,59 +16,52 @@ logger = logging.getLogger(__name__)
 class ImageService:
     """Assembles individual captures into a photo strip and persists it."""
 
-    def assemble_strip(self, photos: List[Image.Image]) -> Image.Image:
-        """
-        Combine N photos into a vertical strip with padding and branding.
-
-        Layout:
-          ┌─────────────────────┐
-          │      padding        │
-          │  ┌───────────────┐  │
-          │  │    photo 1    │  │
-          │  └───────────────┘  │
-          │      padding        │
-          │  ┌───────────────┐  │
-          │  │    photo 2    │  │
-          │  └───────────────┘  │
-          │      padding        │
-          │  ┌───────────────┐  │
-          │  │    photo 3    │  │
-          │  └───────────────┘  │
-          │  timestamp + logo   │
-          └─────────────────────┘
-        """
-        if not photos:
-            raise ValueError("No photos to assemble")
-
-        pad = settings.STRIP_PADDING
-        thumb_w = 800
-        thumb_h = int(thumb_w * photos[0].height / photos[0].width)
-
-        strip_w = thumb_w + pad * 2
-        strip_h = (thumb_h + pad) * len(photos) + pad + 60  # 60px footer
-
-        # Background
+    def assemble_strip(self, photos: list) -> Image.Image:
+        pad = 20
+        border = 8
         bg_color = self._hex_to_rgb(settings.STRIP_BACKGROUND)
-        strip = Image.new("RGB", (strip_w, strip_h), color=bg_color)
+
+        canvas_w = 1600
+        canvas_h = 1000
+
+        strip = Image.new("RGB", (canvas_w, canvas_h), color=bg_color)
         draw = ImageDraw.Draw(strip)
 
-        # Paste each photo
-        for i, photo in enumerate(photos):
-            thumb = photo.resize((thumb_w, thumb_h), Image.LANCZOS)
-            # Subtle rounded corners via mask
-            thumb = self._rounded_corners(thumb, radius=12)
-            y_offset = pad + i * (thumb_h + pad)
-            strip.paste(thumb, (pad, y_offset), thumb if thumb.mode == "RGBA" else None)
+        cell_w = canvas_w // 2
+        cell_h = canvas_h // 2
 
-        # Footer: timestamp
-        footer_y = strip_h - 50
-        timestamp = datetime.now().strftime("%d/%m/%Y  %H:%M")
-        draw.text(
-            (strip_w // 2, footer_y),
-            f"✦ {timestamp} ✦",
-            fill=(120, 140, 200),
-            anchor="mm",
-        )
+        # Zones : (col, row) -> position
+        photo_zones = [
+            (cell_w + pad, pad,          cell_w - pad * 2, cell_h - pad * 2),  # photo 1 : haut droite
+            (pad,          cell_h + pad, cell_w - pad * 2, cell_h - pad * 2),  # photo 2 : bas gauche
+            (cell_w + pad, cell_h + pad, cell_w - pad * 2, cell_h - pad * 2),  # photo 3 : bas droite
+        ]
+
+        for i, (x, y, w, h) in enumerate(photo_zones):
+            if i >= len(photos):
+                break
+            # Bordure blanche
+            draw.rectangle(
+                [x - border, y - border, x + w + border, y + h + border],
+                fill=(255, 255, 255)
+            )
+            photo = photos[i].resize((w, h), Image.LANCZOS)
+            strip.paste(photo, (x, y))
+
+        # Zone LOGO : haut gauche
+        logo_cx = cell_w // 2
+        logo_cy = cell_h // 2
+
+        try:
+            font_large = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 80)
+            font_small = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 32)
+        except:
+            font_large = ImageFont.load_default()
+            font_small = ImageFont.load_default()
+
+        draw.text((logo_cx, logo_cy - 80), "✦", fill=(128, 144, 255), anchor="mm", font=font_large)
+        draw.text((logo_cx, logo_cy),      "PHOTO", fill=(200, 210, 255), anchor="mm", font=font_large)
+        draw.text((logo_cx, logo_cy + 90), "BOOTH", fill=(200, 210, 255), anchor="mm", font=font_large)
 
         return strip
 

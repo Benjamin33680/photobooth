@@ -26,6 +26,9 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
             <span class="sep">·</span>
             <span>{{ stats.total_size_mb }} MB</span>
           </div>
+          <button class="refresh-btn" *ngIf="!isLocalhost()" (click)="refresh()" [class.spinning]="loading">
+            ↻
+          </button>
           <button class="logout-btn" *ngIf="!isLocalhost()" (click)="logout()">
             Déconnexion
           </button>
@@ -232,9 +235,9 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
     /* Grid */
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 2px;
-      padding: 2px;
+      grid-template-columns: repeat(auto-fill, minmax(560px, 1fr));
+      gap: 8px;
+      padding: 8px;
     }
 
     .card {
@@ -247,7 +250,7 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
 
     .card-img-wrap {
       position: relative;
-      aspect-ratio: 1 / 2.2;
+      aspect-ratio: 16 / 10;
       overflow: hidden;
     }
 
@@ -390,11 +393,53 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       color: rgba(128, 144, 255, 0.4);
     }
 
-    /* Mobile */
+    .refresh-btn {
+      background: none;
+      border: none ;
+      color: rgba(128, 144, 255, 0.7);
+      width: 38px;
+      height: 38px;
+      font-size: 30px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .refresh-btn.spinning {
+      animation: spin 0.8s linear infinite;
+    }
+
     @media (max-width: 600px) {
-      .header { padding: 16px 20px; }
-      .title { font-size: 18px; letter-spacing: 6px; }
-      .grid { grid-template-columns: repeat(2, 1fr); }
+      .header { 
+        padding: 10px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .title { 
+        font-size: 14px; 
+        letter-spacing: 4px; 
+      }
+      .grid { 
+        grid-template-columns: repeat(1, 1fr); 
+      }
+      .stats {
+        display: none;
+      }
+      .header-right {
+        gap: 12px;
+      }
+      .logout-btn {
+        padding: 6px 12px;
+        font-size: 11px;
+        letter-spacing: 2px;
+      }
+      .refresh-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
     }
   `],
 })
@@ -445,6 +490,13 @@ export class GalleryComponent implements OnInit {
       next: (s) => { this.stats = s; this.cdr.markForCheck(); },
       error: () => { },
     });
+  }
+
+  refresh(): void {
+    this.photos = [];
+    this.offset = 0;
+    this.loadPhotos();
+    this.loadStats();
   }
 
   getUrl(photo: PhotoMeta): string {
