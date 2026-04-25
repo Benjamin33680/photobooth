@@ -1,0 +1,35 @@
+/* src/styles.css */
+
+/* Reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #07070f;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Kiosk: disable text selection everywhere */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Gallery route allows scroll */
+app-gallery {
+  display: block;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #07070f; }
+::-webkit-scrollbar-thumb { background: rgba(128, 144, 255, 0.3); border-radius: 2px; }
