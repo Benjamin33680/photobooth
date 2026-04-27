@@ -22,6 +22,7 @@ class ImageService:
         settings_svc = SettingsService()
         app_settings = settings_svc.get()
 
+        pad = 20
         border = 8
 
         bg_color_hex = app_settings.get("strip_background", "#1a1a2e")
