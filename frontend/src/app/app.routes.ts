@@ -4,6 +4,8 @@ import { KioskGuard } from './auth/kiosk.guard';
 import { KioskComponent } from './kiosk/kiosk.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { LoginComponent } from './auth/login.component';
+import { AdminGuard } from './auth/admin.guard';
+import { SettingsComponent } from './settings/settings.component';
 
 export const routes: Routes = [
   {
@@ -19,6 +21,11 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
+  },
+  {
+    path: 'settings',
+    component: SettingsComponent,
+    canActivate: [AdminGuard],
   },
   { path: '**', redirectTo: '' },
 ];

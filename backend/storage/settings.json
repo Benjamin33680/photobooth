@@ -1,0 +1,44 @@
+{
+  "show_qrcode": true,
+  "photos_count": 3,
+  "selected_logo": "default",
+  "strip_background": "#1a1a2e",
+  "strip_background_image": null,
+  "strip_layout": {
+    "cols": 2,
+    "rows": 2,
+    "cells": [
+      {
+        "type": "logo",
+        "col": 0,
+        "row": 0,
+        "w": 1,
+        "h": 1
+      },
+      {
+        "type": "photo",
+        "index": 0,
+        "col": 1,
+        "row": 0,
+        "w": 1,
+        "h": 1
+      },
+      {
+        "type": "photo",
+        "index": 1,
+        "col": 0,
+        "row": 1,
+        "w": 1,
+        "h": 1
+      },
+      {
+        "type": "photo",
+        "index": 2,
+        "col": 1,
+        "row": 1,
+        "w": 1,
+        "h": 1
+      }
+    ]
+  }
+}

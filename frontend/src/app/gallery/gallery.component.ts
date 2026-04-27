@@ -29,6 +29,7 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
           <button class="refresh-btn" *ngIf="!isLocalhost()" (click)="refresh()" [class.spinning]="loading">
             ↻
           </button>
+          <a routerLink="/settings" class="settings-link" *ngIf="isAdmin()">⚙ Réglages</a>
           <button class="logout-btn" *ngIf="!isLocalhost()" (click)="logout()">
             Déconnexion
           </button>
@@ -142,6 +143,16 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       align-items: center;
       gap: 24px;
     }
+
+    .settings-link {
+      color: rgba(128,144,255,0.5);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .settings-link:hover { color: #8090ff; }
 
     .logout-btn {
       background: none;
@@ -537,7 +548,7 @@ export class GalleryComponent implements OnInit {
   }
 
   isAdmin(): boolean {
-    return this.auth.isAdmin() || this.auth.isLocalhost();
+    return this.auth.isAdmin();
   }
 
   isLocalhost(): boolean {

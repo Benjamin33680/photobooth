@@ -4,10 +4,12 @@ import {
   OnDestroy,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
+  inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { PhotoboothService, BoothState } from './photobooth.service';
 import QRCode from 'qrcode';
+import { SettingsService } from '../settings/settings.service';
 
 @Component({
   selector: 'app-kiosk',
@@ -77,7 +79,7 @@ import QRCode from 'qrcode';
           <div class="result-hint-container">
             <p class="result-hint">Touchez pour recommencer</p>
           </div>
-          <div class="qr-container" *ngIf="qrCodeDataUrl">
+          <div class="qr-container" *ngIf="qrCodeDataUrl && showQrcode">
             <p class="qr-label">SCANNEZ CE QR CODE POUR TÉLÉCHARGER LA PHOTO</p>
             <img [src]="qrCodeDataUrl" class="qr-code" alt="QR Code" />
           </div>
@@ -464,9 +466,11 @@ export class KioskComponent implements OnInit, OnDestroy {
   photoRange = [0, 1, 2];
   qrCodeDataUrl: string | null = null;
   hostname = window.location.hostname
+  showQrcode = true;
 
   private _lastTap = 0;
   private subs = new Subscription();
+  private settingsService = inject(SettingsService);
 
   constructor(
     private booth: PhotoboothService,
@@ -478,6 +482,12 @@ export class KioskComponent implements OnInit, OnDestroy {
 
     this.subs.add(this.booth.state$.subscribe((s) => {
       this.state = s;
+      // Recharge les settings à chaque retour en idle
+      if (s === 'idle') {
+        this.settingsService.getSettings().subscribe(cfg => {
+          this.showQrcode = cfg.show_qrcode;
+        });
+      }
       this.cdr.markForCheck();
     }));
 
@@ -532,10 +542,8 @@ export class KioskComponent implements OnInit, OnDestroy {
   }
 
   onScreenTap(): void {
-    console.log('TAP détecté, state:', this.state);
     const now = Date.now();
     if (now - this._lastTap < 300) {
-      console.log('bloqué anti double-trigger');
       return;
     }
     this._lastTap = now;

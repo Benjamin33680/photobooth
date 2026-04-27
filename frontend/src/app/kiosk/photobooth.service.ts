@@ -43,8 +43,6 @@ export class PhotoboothService implements OnDestroy {
 
     const url = `ws://192.168.1.50:8000/api/camera/ws`;
 
-    console.log('Connexion WS vers :', url);
-
     this.ws = new WebSocket(url);
 
     this.ws.onmessage = (event) => this._handleMessage(JSON.parse(event.data));

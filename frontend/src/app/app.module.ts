@@ -9,6 +9,7 @@ import { KioskComponent } from './kiosk/kiosk.component';
 import { GalleryComponent } from './gallery/gallery.component';
 import { LoginComponent } from './auth/login.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     KioskComponent,
     GalleryComponent,
     LoginComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

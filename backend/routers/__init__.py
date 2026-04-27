@@ -1,3 +1,3 @@
-from . import camera, gallery, auth
+from . import camera, gallery, auth, settings
 
-__all__ = ["camera", "gallery", "auth"]
+__all__ = ["camera", "gallery", "auth", "settings"]
