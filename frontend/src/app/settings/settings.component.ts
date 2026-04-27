@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { SettingsService, AppSettings, Cell } from './settings.service';
+import { SettingsService, AppSettings, Cell, StripLayout } from './settings.service';
 import { AuthService } from '../auth/auth.service';
 
 @Component({
@@ -92,30 +92,24 @@ import { AuthService } from '../auth/auth.service';
 
         <!-- Section Layout drag & drop -->
         <section class="section">
-          <h2 class="section-title">Disposition des cellules</h2>
-          <p class="section-hint">Glissez les cellules pour les repositionner</p>
+          <h2 class="section-title">Disposition du strip</h2>
 
-          <div
-            class="layout-grid"
-            [style.grid-template-columns]="'repeat(' + settings.strip_layout.cols + ', 1fr)'"
-            [style.grid-template-rows]="'repeat(' + settings.strip_layout.rows + ', 120px)'"
-          >
-            <div
-              *ngFor="let cell of settings.strip_layout.cells; let i = index"
-              class="layout-cell"
-              [class.logo-cell]="cell.type === 'logo'"
-              [class.photo-cell]="cell.type === 'photo'"
-              draggable="true"
-              (dragstart)="onDragStart(i)"
-              (dragover)="$event.preventDefault()"
-              (drop)="onDrop(i)"
-              [style.grid-column]="(cell.col + 1) + ' / span ' + cell.w"
-              [style.grid-row]="(cell.row + 1) + ' / span ' + cell.h"
-            >
-              <span *ngIf="cell.type === 'logo'">✦ LOGO</span>
-              <span *ngIf="cell.type === 'photo'">📷 Photo {{ (cell.index ?? 0) + 1 }}</span>
-            </div>
-          </div>
+          <!-- Éditeur -->
+          <app-layout-editor
+            *ngIf="settings"
+            [layout]="settings.strip_layout"
+            [logos]="logos"
+            (layoutChange)="onLayoutChange($event)"
+          ></app-layout-editor>
+
+          <!-- Preview temps réel -->
+          <app-strip-preview
+            *ngIf="settings"
+            [layout]="settings.strip_layout"
+            [bgColor]="settings.strip_background"
+            [bgImageUrl]="settings.strip_background_image ? getBgUrl(settings.strip_background_image) : null"
+            [logoBaseUrl]="'http://' + hostname + ':8000'"
+          ></app-strip-preview>
         </section>
 
         <!-- Section Actions -->
@@ -538,6 +532,7 @@ export class SettingsComponent implements OnInit {
   confirmType: 'shutdown' | 'reset' | null = null;
   toastMsg: string | null = null;
   dragIndex: number | null = null;
+  hostname = window.location.hostname;
 
   get exporting(): boolean {
     return this.settingsService.isExporting;
@@ -642,5 +637,11 @@ export class SettingsComponent implements OnInit {
   showToast(msg: string): void {
     this.toastMsg = msg;
     setTimeout(() => this.toastMsg = null, 3000);
+  }
+
+  onLayoutChange(layout: StripLayout): void {
+    if (this.settings) {
+      this.settings.strip_layout = layout;
+    }
   }
 }

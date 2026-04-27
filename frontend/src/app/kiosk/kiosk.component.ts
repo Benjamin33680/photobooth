@@ -51,7 +51,7 @@ import { SettingsService } from '../settings/settings.service';
         <div *ngSwitchCase="'countdown'" class="overlay-countdown">
           <div class="photo-dots">
             <span
-              *ngFor="let i of photoRange"
+              *ngFor="let i of getPhotoRange()"
               class="dot"
               [class.active]="i <= currentPhotoIndex"
               [class.current]="i === currentPhotoIndex"
@@ -60,7 +60,7 @@ import { SettingsService } from '../settings/settings.service';
           <div class="countdown-number" [attr.data-value]="countdownValue">
             {{ countdownValue }}
           </div>
-          <p class="photo-label">Photo {{ currentPhotoIndex + 1 }} / 3</p>
+          <p class="photo-label">Photo {{ currentPhotoIndex + 1 }} / {{ photosTotal }}</p>
         </div>
 
         <!-- CAPTURE FLASH (handled via CSS class) -->
@@ -467,6 +467,7 @@ export class KioskComponent implements OnInit, OnDestroy {
   qrCodeDataUrl: string | null = null;
   hostname = window.location.hostname
   showQrcode = true;
+  photosTotal = 3;
 
   private _lastTap = 0;
   private subs = new Subscription();
@@ -486,6 +487,10 @@ export class KioskComponent implements OnInit, OnDestroy {
       if (s === 'idle') {
         this.settingsService.getSettings().subscribe(cfg => {
           this.showQrcode = cfg.show_qrcode;
+          // Compte le nombre de cellules photo
+          this.photosTotal = cfg.strip_layout.cells.filter(
+            (c: any) => c.type === 'photo'
+          ).length || 3;
         });
       }
       this.cdr.markForCheck();
@@ -543,17 +548,28 @@ export class KioskComponent implements OnInit, OnDestroy {
 
   onScreenTap(): void {
     const now = Date.now();
-    if (now - this._lastTap < 300) {
-      return;
-    }
+    if (now - this._lastTap < 300) return;
     this._lastTap = now;
+
     if (this.state === 'idle') {
-      this.booth.startSession();
+      // Recharge les settings avant de démarrer la session
+      this.settingsService.getSettings().subscribe(cfg => {
+        this.showQrcode = cfg.show_qrcode;
+        this.photosTotal = cfg.strip_layout.cells.filter(
+          (c: any) => c.type === 'photo'
+        ).length || 3;
+        // Lance la session après chargement
+        this.booth.startSession();
+      });
     } else if (this.state === 'result') {
       this.resultStrip = null;
       this.resultUrl = null;
       this.booth.state$.next('idle');
     }
+  }
+
+  getPhotoRange(): number[] {
+    return Array.from({ length: this.photosTotal }, (_, i) => i);
   }
 
   triggerFlash(): void {

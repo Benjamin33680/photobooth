@@ -37,6 +37,11 @@ async def save_settings(data: dict, _=Depends(require_admin)):
 async def reset_settings(_=Depends(require_admin)):
     return settings_service.reset()
 
+@router.get("/photos-count")
+async def get_photos_count():
+    """Retourne le nombre de photos configuré — public pour le kiosk."""
+    return {"photos_count": settings_service.get_photos_count()}
+
 
 # ------------------------------------------------------------------ #
 #  Logos                                                               #

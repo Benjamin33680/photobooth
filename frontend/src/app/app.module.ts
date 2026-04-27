@@ -10,6 +10,8 @@ import { GalleryComponent } from './gallery/gallery.component';
 import { LoginComponent } from './auth/login.component';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { SettingsComponent } from './settings/settings.component';
+import { LayoutEditorComponent } from './settings/layout-editor.component';
+import { StripPreviewComponent } from './settings/strip-preview.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +20,8 @@ import { SettingsComponent } from './settings/settings.component';
     GalleryComponent,
     LoginComponent,
     SettingsComponent,
+    LayoutEditorComponent,
+    StripPreviewComponent,
   ],
   imports: [
     BrowserModule,

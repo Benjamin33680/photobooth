@@ -73,37 +73,35 @@ async def _stream_preview(websocket: WebSocket):
     except asyncio.CancelledError:
         pass
 
-
 async def _run_photobooth_sequence(websocket: WebSocket):
-    """
-    Full photobooth sequence:
-      For each of 3 photos:
-        1. Countdown 3-2-1 (with live preview frames)
-        2. Capture
-      Then assemble and send result.
-    """
     from config import settings
+    from services.settings_service import SettingsService
+
+    # Nombre de photos depuis les settings
+    settings_svc = SettingsService()
+    photos_count = settings_svc.get_photos_count()
+    if photos_count == 0:
+        photos_count = settings.PHOTOS_COUNT
 
     photos = []
 
-    for photo_index in range(settings.PHOTOS_COUNT):
-        # Countdown with live preview
+    for photo_index in range(photos_count):
         for tick in range(settings.COUNTDOWN_SECONDS, 0, -1):
-            await _send(websocket, {"type": "countdown", "value": tick, "photo_index": photo_index})
-            # Stream frames during countdown
+            await _send(websocket, {
+                "type": "countdown",
+                "value": tick,
+                "photo_index": photo_index,
+                "photos_total": photos_count
+            })
             await _stream_for_duration(websocket, duration=1.0)
 
-        # Capture
         await _send(websocket, {"type": "capture", "index": photo_index})
         photo = await camera_service.capture_photo()
         photos.append(photo)
-        logger.info(f"Captured photo {photo_index + 1}/{settings.PHOTOS_COUNT}")
 
-        # Brief pause between photos (except after last)
-        if photo_index < settings.PHOTOS_COUNT - 1:
+        if photo_index < photos_count - 1:
             await asyncio.sleep(0.5)
 
-    # Assemble strip
     await _send(websocket, {"type": "processing"})
     strip = image_service.assemble_strip(photos)
     metadata = image_service.save_strip(strip)

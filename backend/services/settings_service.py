@@ -1,7 +1,5 @@
 import json
 import os
-from typing import Any
-from config import settings as app_settings
 
 SETTINGS_FILE = "storage/settings.json"
 
@@ -14,10 +12,42 @@ DEFAULT_SETTINGS = {
         "cols": 2,
         "rows": 2,
         "cells": [
-            {"type": "logo",  "col": 0, "row": 0, "w": 1, "h": 1},
-            {"type": "photo", "index": 0, "col": 1, "row": 0, "w": 1, "h": 1},
-            {"type": "photo", "index": 1, "col": 0, "row": 1, "w": 1, "h": 1},
-            {"type": "photo", "index": 2, "col": 1, "row": 1, "w": 1, "h": 1},
+            {
+                "id": 1,
+                "type": "logo",
+                "logo": "default",
+                "col": 0,
+                "row": 0,
+                "col_span": 1,
+                "row_span": 1
+            },
+            {
+                "id": 2,
+                "type": "photo",
+                "photo_index": 0,
+                "col": 1,
+                "row": 0,
+                "col_span": 1,
+                "row_span": 1
+            },
+            {
+                "id": 3,
+                "type": "photo",
+                "photo_index": 1,
+                "col": 0,
+                "row": 1,
+                "col_span": 1,
+                "row_span": 1
+            },
+            {
+                "id": 4,
+                "type": "photo",
+                "photo_index": 2,
+                "col": 1,
+                "row": 1,
+                "col_span": 1,
+                "row_span": 1
+            }
         ]
     }
 }
@@ -45,3 +75,9 @@ class SettingsService:
         current = self.get()
         current.update(partial)
         return self.save(current)
+
+    def get_photos_count(self) -> int:
+        """Retourne le nombre de cellules photo dans le layout."""
+        settings = self.get()
+        cells = settings.get("strip_layout", {}).get("cells", [])
+        return len([c for c in cells if c.get("type") == "photo"])

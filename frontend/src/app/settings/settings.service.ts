@@ -3,12 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Cell {
+  id: number;
   type: 'logo' | 'photo' | 'empty';
-  index?: number;
+  logo?: string;
+  photo_index?: number;
   col: number;
   row: number;
-  w: number;
-  h: number;
+  col_span: number;
+  row_span: number;
 }
 
 export interface StripLayout {
@@ -19,8 +21,6 @@ export interface StripLayout {
 
 export interface AppSettings {
   show_qrcode: boolean;
-  show_download_btn: boolean;
-  photos_count: number;
   selected_logo: string;
   strip_background: string;
   strip_background_image: string | null;
@@ -29,7 +29,6 @@ export interface AppSettings {
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
-
   isExporting = false;
 
   private get base(): string {
@@ -74,24 +73,22 @@ export class SettingsService {
     return this.http.post(`${this.base}/background`, fd);
   }
 
-  exportPhotos(token: string): Promise<void> {
+  async exportPhotos(token: string): Promise<void> {
     const url = `${this.base}/export`;
-    return fetch(url, {
+    const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => res.blob())
-      .then(blob => {
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = URL.createObjectURL(blob);
-        a.download = 'photobooth_photos.zip';
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          URL.revokeObjectURL(a.href);
-        }, 100);
-      });
+    });
+    const blob = await res.blob();
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = URL.createObjectURL(blob);
+    a.download = 'photobooth_photos.zip';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    }, 100);
   }
 
   shutdown(): Observable<any> {
@@ -104,6 +101,6 @@ export class SettingsService {
   }
 
   getBackgroundUrl(filename: string): string {
-    return `${this.storageBase}/backgrounds/${filename}`;
+    return `${this.storageBase}/backgrounds/${encodeURIComponent(filename)}`;
   }
 }
