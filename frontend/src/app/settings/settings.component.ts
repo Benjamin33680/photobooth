@@ -29,7 +29,7 @@ import { AuthService } from '../auth/auth.service';
               <input type="checkbox" [(ngModel)]="settings.show_qrcode" />
             </label>
             <label class="toggle-row">
-              <span>Activer la prise de photo à distance</span>
+              <span>Photo à distance</span>
               <input type="checkbox" [(ngModel)]="settings.remote_enabled" />
             </label>
           </div>

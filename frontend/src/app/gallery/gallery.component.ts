@@ -19,6 +19,7 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
         title="GALERIE"
         [showRefresh]="true"
         [onRefreshFn]="refresh.bind(this)"
+        [remoteEnabled]="remoteEnabled"
       >
         <div class="stats" *ngIf="stats">
           <span>{{ stats.total_photos }} photos</span>
@@ -413,7 +414,7 @@ export class GalleryComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) { }
 
-  remoteEnabled = true;
+  remoteEnabled = false;
 
   ngOnInit(): void {
     this.loadPhotos();

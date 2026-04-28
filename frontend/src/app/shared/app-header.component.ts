@@ -120,15 +120,11 @@ export class AppHeaderComponent implements OnInit {
   @Input() backLink: string | null = null;
   @Input() onRefreshFn: (() => void) | null = null;
 
-  remoteEnabled = true;
+  @Input() remoteEnabled = true;
 
   constructor(private auth: AuthService, private router: Router) { }
 
-  ngOnInit(): void {
-    fetch(`http://${window.location.hostname}:8000/api/settings`)
-      .then(r => r.json())
-      .then(cfg => { this.remoteEnabled = cfg.remote_enabled ?? true; });
-  }
+  ngOnInit(): void { }
 
   isLocalhost(): boolean {
     return this.auth.isLocalhost();
