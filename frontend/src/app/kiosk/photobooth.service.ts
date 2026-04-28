@@ -66,6 +66,12 @@ export class PhotoboothService implements OnDestroy {
     }
   }
 
+  resetSession(): void {
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ action: 'reset' }));
+    }
+  }
+
   // ---------------------------------------------------------------- //
 
   private _handleMessage(msg: BoothMessage): void {
@@ -103,6 +109,12 @@ export class PhotoboothService implements OnDestroy {
 
       case 'error':
         this.error$.next(msg.message ?? 'Unknown error');
+        this.state$.next('idle');
+        break;
+
+      case 'reset':
+        this.resultStrip$.next(null);
+        this.resultUrl$.next(null);
         this.state$.next('idle');
         break;
     }

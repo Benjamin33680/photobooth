@@ -10,8 +10,8 @@ import { AuthService } from '../auth/auth.service';
 
       <!-- Header -->
       <header class="header">
-        <a routerLink="/gallery" class="back-link">← Galerie</a>
-        <h1 class="title">⚙ RÉGLAGES</h1>
+        <h1 class="title">RÉGLAGES</h1>
+        <a routerLink="/gallery" class="back-link">Galerie</a>
         <div class="header-actions">
           <button class="btn-save" (click)="save()">Sauvegarder</button>
         </div>
@@ -26,6 +26,10 @@ import { AuthService } from '../auth/auth.service';
             <label class="toggle-row">
               <span>Afficher le QR code</span>
               <input type="checkbox" [(ngModel)]="settings.show_qrcode" />
+            </label>
+            <label class="toggle-row">
+              <span>Activer la prise de photo à distance</span>
+              <input type="checkbox" [(ngModel)]="settings.remote_enabled" />
             </label>
           </div>
         </section>

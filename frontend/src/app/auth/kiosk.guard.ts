@@ -7,10 +7,13 @@ export class KioskGuard implements CanActivate {
   constructor(private auth: AuthService, private router: Router) { }
 
   canActivate(): boolean {
-    // Seul localhost peut accéder au kiosk
     if (this.auth.isLocalhost()) return true;
 
-    this.router.navigate(['/login']);
+    if (this.auth.isLoggedIn()) {
+      this.router.navigate(['/remote']);
+    } else {
+      this.router.navigate(['/login']);
+    }
     return false;
   }
 }

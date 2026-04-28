@@ -439,11 +439,11 @@ import { SettingsService } from '../settings/settings.service';
     /* Gallery link */
     .gallery-link {
       position: absolute;
-      top: 24px;
+      top: 40px;
       right: 24px;
       color: rgba(128,144,255,0.5);
       text-decoration: none;
-      font-size: 14px;
+      font-size: 25px;
       letter-spacing: 3px;
       text-transform: uppercase;
       pointer-events: all;
@@ -564,7 +564,7 @@ export class KioskComponent implements OnInit, OnDestroy {
     } else if (this.state === 'result') {
       this.resultStrip = null;
       this.resultUrl = null;
-      this.booth.state$.next('idle');
+      this.booth.resetSession();
     }
   }
 

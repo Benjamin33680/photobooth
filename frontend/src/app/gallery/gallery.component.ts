@@ -5,8 +5,6 @@ import {
   ChangeDetectorRef,
   inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
 
@@ -18,20 +16,25 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
 
       <!-- Header -->
       <header class="header">
-        <a routerLink="/" class="back-link" *ngIf="isLocalhost()">← Photobooth</a>
         <h1 class="title">GALERIE</h1>
+        <a routerLink="/" class="back-link" *ngIf="isLocalhost()">← Photobooth</a>
         <div class="header-right">
           <div class="stats" *ngIf="stats">
             <span>{{ stats.total_photos }} photos</span>
             <span class="sep">·</span>
             <span>{{ stats.total_size_mb }} MB</span>
           </div>
-          <button class="refresh-btn" *ngIf="!isLocalhost()" (click)="refresh()" [class.spinning]="loading">
-            ↻
+          <a routerLink="/remote" class="icon-btn" *ngIf="!isLocalhost() && remoteEnabled">
+            <mat-icon>camera_alt</mat-icon>
+          </a>
+          <button class="icon-btn" *ngIf="!isLocalhost()" (click)="refresh()">
+            <mat-icon>refresh</mat-icon>
           </button>
-          <a routerLink="/settings" class="settings-link" *ngIf="isAdmin()">⚙ Réglages</a>
-          <button class="logout-btn" *ngIf="!isLocalhost()" (click)="logout()">
-            Déconnexion
+          <a routerLink="/settings" class="icon-btn" *ngIf="isAdmin()">
+            <mat-icon>settings</mat-icon>
+          </a>
+          <button class="icon-btn logout" *ngIf="!isLocalhost()" (click)="logout()">
+            <mat-icon>logout</mat-icon>
           </button>
         </div>
       </header>
@@ -131,42 +134,46 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       z-index: 10;
       display: flex;
       align-items: center;
-      gap: 24px;
-      padding: 20px 40px;
-      background: rgba(7, 7, 15, 0.95);
+      gap: 16px;
+      padding: 16px 24px;
+      background: rgba(7,7,15,0.95);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(128, 144, 255, 0.1);
+      border-bottom: 1px solid rgba(128,144,255,0.1);
+    }
+
+    .title {
+      flex: 1;
+      margin: 0;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: 10px;
+      color: #e0e6ff;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 24px;
+      gap: 12px;
     }
 
-    .settings-link {
-      color: rgba(128,144,255,0.5);
-      text-decoration: none;
-      font-size: 12px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .settings-link:hover { color: #8090ff; }
-
-    .logout-btn {
+    .icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
       background: none;
-      border: 1px solid rgba(255, 96, 96, 0.4);
-      color: #ff6060;
-      padding: 8px 20px;
-      font-size: 12px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-family: inherit;
+      border: 1px solid rgba(128,144,255,0.2);
+      border-radius: 50%;
+      color: rgba(128,144,255,0.6);
       cursor: pointer;
+      text-decoration: none;
       transition: all 0.2s;
+      font-size: 20px;
     }
-    .logout-btn:hover { background: rgba(255, 96, 96, 0.1); }
+    .icon-btn:hover { border-color: #8090ff; color: #8090ff; }
+    .icon-btn.logout { border-color: rgba(255,96,96,0.2); color: rgba(255,96,96,0.5); }
+    .icon-btn.logout:hover { border-color: #ff6060; color: #ff6060; }
 
     .back-link {
       color: rgba(128, 144, 255, 0.6);
@@ -177,15 +184,6 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       transition: color 0.2s;
     }
     .back-link:hover { color: #8090ff; }
-
-    .title {
-      flex: 1;
-      margin: 0;
-      font-size: 24px;
-      font-weight: 400;
-      letter-spacing: 10px;
-      color: #e0e6ff;
-    }
 
     .stats {
       font-size: 13px;
@@ -404,29 +402,14 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       color: rgba(128, 144, 255, 0.4);
     }
 
-    .refresh-btn {
-      background: none;
-      border: none ;
-      color: rgba(128, 144, 255, 0.7);
-      width: 38px;
-      height: 38px;
-      font-size: 30px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
-    .refresh-btn.spinning {
-      animation: spin 0.8s linear infinite;
-    }
-
     @media (max-width: 600px) {
       .header { 
         padding: 10px 16px;
         flex-wrap: wrap;
         gap: 8px;
+      }
+      .header-right {
+        min-width: 5em;
       }
       .title { 
         font-size: 14px; 
@@ -440,16 +423,6 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       }
       .header-right {
         gap: 12px;
-      }
-      .logout-btn {
-        padding: 6px 12px;
-        font-size: 11px;
-        letter-spacing: 2px;
-      }
-      .refresh-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 16px;
       }
     }
   `],
@@ -470,9 +443,22 @@ export class GalleryComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) { }
 
+  remoteEnabled = true;
+
   ngOnInit(): void {
     this.loadPhotos();
     this.loadStats();
+    this.checkRemoteEnabled();
+  }
+
+  checkRemoteEnabled(): void {
+    const host = window.location.hostname;
+    fetch(`http://${host}:8000/api/settings`)
+      .then(r => r.json())
+      .then(cfg => {
+        this.remoteEnabled = cfg.remote_enabled ?? true;
+        this.cdr.markForCheck();
+      });
   }
 
   loadPhotos(): void {

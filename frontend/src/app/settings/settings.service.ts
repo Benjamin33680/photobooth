@@ -21,6 +21,7 @@ export interface StripLayout {
 
 export interface AppSettings {
   show_qrcode: boolean;
+  remote_enabled: boolean;
   selected_logo: string;
   strip_background: string;
   strip_background_image: string | null;

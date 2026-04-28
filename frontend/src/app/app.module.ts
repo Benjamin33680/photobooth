@@ -12,6 +12,8 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 import { SettingsComponent } from './settings/settings.component';
 import { LayoutEditorComponent } from './settings/layout-editor.component';
 import { StripPreviewComponent } from './settings/strip-preview.component';
+import { RemoteComponent } from './remote/remote.component';
+import { MatIconModule } from '@angular/material/icon'
 
 @NgModule({
   declarations: [
@@ -22,11 +24,13 @@ import { StripPreviewComponent } from './settings/strip-preview.component';
     SettingsComponent,
     LayoutEditorComponent,
     StripPreviewComponent,
+    RemoteComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
+    MatIconModule,
     RouterModule.forRoot(routes),
   ],
   providers: [
