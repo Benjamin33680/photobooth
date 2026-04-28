@@ -1,7 +1,7 @@
 {
   "show_qrcode": true,
   "remote_enabled": true,
-  "selected_logo": "4637.png",
+  "selected_logo": "default",
   "strip_background": "#1a1a2e",
   "strip_background_image": null,
   "strip_layout": {
@@ -11,7 +11,7 @@
       {
         "id": 1,
         "type": "logo",
-        "logo": "4637.png",
+        "logo": "default",
         "col": 0,
         "row": 0,
         "col_span": 1,

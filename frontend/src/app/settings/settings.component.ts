@@ -42,8 +42,6 @@ import { AuthService } from '../auth/auth.service';
             <div
               *ngFor="let logo of logos"
               class="logo-item"
-              [class.selected]="settings.selected_logo === logo"
-              (click)="settings.selected_logo = logo"
             >
               <div *ngIf="logo === 'default'" class="logo-default">
                 <span>✦</span>
@@ -51,12 +49,21 @@ import { AuthService } from '../auth/auth.service';
               </div>
               <img *ngIf="logo !== 'default'" [src]="getLogoUrl(logo)" [alt]="logo" />
               <p class="logo-name">{{ logo === 'default' ? 'Défaut' : logo }}</p>
+              <button
+                *ngIf="logo !== 'default'"
+                class="delete-media-btn"
+                (click)="deleteLogo(logo)"
+                matTooltip="Supprimer"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
             </div>
+            <!-- Bouton + à la fin -->
+            <label class="logo-item add-item" matTooltip="Ajouter un logo">
+              <mat-icon>add</mat-icon>
+              <input type="file" accept="image/*" (change)="uploadLogo($event)" hidden />
+            </label>
           </div>
-          <label class="upload-btn">
-            + Importer un logo
-            <input type="file" accept="image/*" (change)="uploadLogo($event)" hidden />
-          </label>
         </section>
 
         <!-- Section Fond -->
@@ -85,12 +92,20 @@ import { AuthService } from '../auth/auth.service';
                   (click)="settings.strip_background_image = bg.filename"
                 >
                   <img [src]="getBgUrl(bg.filename)" [alt]="bg.filename" />
+                  <button
+                    class="delete-media-btn"
+                    (click)="deleteBackground($event, bg.filename)"
+                    matTooltip="Supprimer"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
                 </div>
+                <!-- Bouton + à la fin -->
+                <label class="bg-item add-item" matTooltip="Ajouter un fond">
+                  <mat-icon>add</mat-icon>
+                  <input type="file" accept="image/*" (change)="uploadBackground($event)" hidden />
+                </label>
               </div>
-              <label class="upload-btn">
-                + Importer un fond
-                <input type="file" accept="image/*" (change)="uploadBackground($event)" hidden />
-              </label>
             </div>
           </div>
         </section>
@@ -159,6 +174,7 @@ import { AuthService } from '../auth/auth.service';
       background: #07070f;
       color: #c0c8ff;
       font-family: 'Courier New', monospace;
+      padding-bottom:3em;
     }
 
     .header {
@@ -231,6 +247,60 @@ import { AuthService } from '../auth/auth.service';
       padding-bottom: 12px;
       border-bottom: 1px solid rgba(128,144,255,0.1);
     }
+
+    .logo-item {
+      position: relative;
+    }
+
+    .bg-item {
+      position: relative;
+    }
+
+    .delete-media-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(255,96,96,0.15);
+      border: 1px solid rgba(255,96,96,0.3);
+      border-radius: 50%;
+      color: #ff6060;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      padding: 0;
+    }
+
+    .logo-item:hover .delete-media-btn,
+    .bg-item:hover .delete-media-btn {
+      opacity: 1;
+    }
+
+    .delete-media-btn mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .add-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed rgba(128,144,255,0.3) !important;
+      color: rgba(128,144,255,0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: none;
+    }
+    .add-item:hover {
+      border-color: #8090ff !important;
+      color: #8090ff;
+    }
+    .add-item mat-icon { font-size: 24px; }
 
     .section-hint {
       font-size: 12px;
@@ -309,20 +379,6 @@ import { AuthService } from '../auth/auth.service';
     }
     .logo-default span { font-size: 24px; }
     .logo-default p { margin: 4px 0 0; text-align: center; line-height: 1.4; }
-
-    .upload-btn {
-      display: inline-block;
-      padding: 10px 20px;
-      border: 1px dashed rgba(128,144,255,0.3);
-      color: rgba(128,144,255,0.6);
-      font-size: 12px;
-      letter-spacing: 3px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .upload-btn:hover { border-color: #8090ff; color: #8090ff; }
 
     /* Background */
     .bg-options { display: flex; flex-direction: column; gap: 24px; }
@@ -584,6 +640,26 @@ export class SettingsComponent implements OnInit {
     this.settingsService.uploadBackground(file).subscribe(() => {
       this.settingsService.getBackgrounds().subscribe(r => this.backgrounds = r.backgrounds);
       this.showToast('Fond importé ✓');
+    });
+  }
+
+  deleteLogo(filename: string): void {
+    if (!confirm(`Supprimer le logo "${filename}" ?`)) return;
+    this.settingsService.deleteLogo(filename).subscribe(() => {
+      this.logos = this.logos.filter(l => l !== filename);
+      this.showToast('Logo supprimé ✓');
+    });
+  }
+
+  deleteBackground(event: Event, filename: string): void {
+    event.stopPropagation();
+    if (!confirm(`Supprimer ce fond ?`)) return;
+    this.settingsService.deleteBackground(filename).subscribe(() => {
+      this.backgrounds = this.backgrounds.filter(b => b.filename !== filename);
+      if (this.settings?.strip_background_image === filename) {
+        this.settings.strip_background_image = null;
+      }
+      this.showToast('Fond supprimé ✓');
     });
   }
 

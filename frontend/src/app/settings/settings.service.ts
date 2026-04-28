@@ -64,6 +64,10 @@ export class SettingsService {
     return this.http.post(`${this.base}/logo`, fd);
   }
 
+  deleteLogo(filename: string): Observable<any> {
+    return this.http.delete(`${this.base}/logo/${encodeURIComponent(filename)}`);
+  }
+
   getBackgrounds(): Observable<{ backgrounds: { filename: string; url: string }[] }> {
     return this.http.get<any>(`${this.base}/backgrounds`);
   }
@@ -72,6 +76,10 @@ export class SettingsService {
     const fd = new FormData();
     fd.append('file', file);
     return this.http.post(`${this.base}/background`, fd);
+  }
+
+  deleteBackground(filename: string): Observable<any> {
+    return this.http.delete(`${this.base}/background/${encodeURIComponent(filename)}`);
   }
 
   async exportPhotos(token: string): Promise<void> {

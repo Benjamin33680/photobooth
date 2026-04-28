@@ -65,6 +65,14 @@ async def upload_logo(file: UploadFile = File(...), _=Depends(require_admin)):
         shutil.copyfileobj(file.file, f)
     return {"filename": filename, "url": f"/logos/{filename}"}
 
+@router.delete("/logo/{filename}")
+async def delete_logo(filename: str, _=Depends(require_admin)):
+    filepath = os.path.join(LOGOS_DIR, filename)
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail="Logo not found")
+    os.remove(filepath)
+    return {"deleted": filename}
+
 
 # ------------------------------------------------------------------ #
 #  Backgrounds                                                         #
@@ -87,6 +95,14 @@ async def upload_background(file: UploadFile = File(...), _=Depends(require_admi
     with open(filepath, "wb") as f:
         shutil.copyfileobj(file.file, f)
     return {"filename": filename, "url": f"/backgrounds/{filename}"}
+
+@router.delete("/background/{filename}")
+async def delete_background(filename: str, _=Depends(require_admin)):
+    filepath = os.path.join(BACKGROUNDS_DIR, filename)
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail="Background not found")
+    os.remove(filepath)
+    return {"deleted": filename}
 
 
 # ------------------------------------------------------------------ #

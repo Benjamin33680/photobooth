@@ -30,7 +30,7 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       <!-- Loading -->
       <div *ngIf="loading" class="loading-state">
         <div class="spinner"></div>
-        <p>Chargement...</p>
+        <p>Chargement...</p>test
       </div>
 
       <!-- Empty state -->
@@ -113,6 +113,7 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       background: #07070f;
       color: #c0c8ff;
       font-family: 'Courier New', monospace;
+      padding-bottom: 3em;
     }
 
     /* Header */
