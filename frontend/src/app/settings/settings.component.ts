@@ -9,13 +9,14 @@ import { AuthService } from '../auth/auth.service';
     <div class="settings-root">
 
       <!-- Header -->
-      <header class="header">
-        <h1 class="title">RÉGLAGES</h1>
-        <a routerLink="/gallery" class="back-link">Galerie</a>
-        <div class="header-actions">
-          <button class="btn-save" (click)="save()">Sauvegarder</button>
-        </div>
-      </header>
+      <app-header
+        title="RÉGLAGES"
+        [showRemote]="false"
+        [showSettings]="false"
+        backLink="/gallery"
+      >
+        <button class="icon-btn save" (click)="save()"><mat-icon>save</mat-icon></button>
+      </app-header>
 
       <div class="content" *ngIf="settings">
 

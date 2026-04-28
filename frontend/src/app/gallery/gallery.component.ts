@@ -15,29 +15,17 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
     <div class="gallery-root">
 
       <!-- Header -->
-      <header class="header">
-        <h1 class="title">GALERIE</h1>
-        <a routerLink="/" class="back-link" *ngIf="isLocalhost()">← Photobooth</a>
-        <div class="header-right">
-          <div class="stats" *ngIf="stats">
-            <span>{{ stats.total_photos }} photos</span>
-            <span class="sep">·</span>
-            <span>{{ stats.total_size_mb }} MB</span>
-          </div>
-          <a routerLink="/remote" class="icon-btn" *ngIf="!isLocalhost() && remoteEnabled">
-            <mat-icon>camera_alt</mat-icon>
-          </a>
-          <button class="icon-btn" *ngIf="!isLocalhost()" (click)="refresh()">
-            <mat-icon>refresh</mat-icon>
-          </button>
-          <a routerLink="/settings" class="icon-btn" *ngIf="isAdmin()">
-            <mat-icon>settings</mat-icon>
-          </a>
-          <button class="icon-btn logout" *ngIf="!isLocalhost()" (click)="logout()">
-            <mat-icon>logout</mat-icon>
-          </button>
+      <app-header
+        title="GALERIE"
+        [showRefresh]="true"
+        [onRefreshFn]="refresh.bind(this)"
+      >
+        <div class="stats" *ngIf="stats">
+          <span>{{ stats.total_photos }} photos</span>
+          <span class="sep">·</span>
+          <span>{{ stats.total_size_mb }} MB</span>
         </div>
-      </header>
+      </app-header>
 
       <!-- Loading -->
       <div *ngIf="loading" class="loading-state">
@@ -155,25 +143,6 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       align-items: center;
       gap: 12px;
     }
-
-    .icon-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 36px;
-      background: none;
-      border: 1px solid rgba(128,144,255,0.2);
-      border-radius: 50%;
-      color: rgba(128,144,255,0.6);
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.2s;
-      font-size: 20px;
-    }
-    .icon-btn:hover { border-color: #8090ff; color: #8090ff; }
-    .icon-btn.logout { border-color: rgba(255,96,96,0.2); color: rgba(255,96,96,0.5); }
-    .icon-btn.logout:hover { border-color: #ff6060; color: #ff6060; }
 
     .back-link {
       color: rgba(128, 144, 255, 0.6);

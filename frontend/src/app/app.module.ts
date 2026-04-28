@@ -14,6 +14,7 @@ import { LayoutEditorComponent } from './settings/layout-editor.component';
 import { StripPreviewComponent } from './settings/strip-preview.component';
 import { RemoteComponent } from './remote/remote.component';
 import { MatIconModule } from '@angular/material/icon'
+import { AppHeaderComponent } from './shared/app-header.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { MatIconModule } from '@angular/material/icon'
     SettingsComponent,
     LayoutEditorComponent,
     StripPreviewComponent,
-    RemoteComponent
+    RemoteComponent,
+    AppHeaderComponent,
   ],
   imports: [
     BrowserModule,

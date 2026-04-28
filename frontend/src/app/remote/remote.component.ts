@@ -10,18 +10,19 @@ import { AuthService } from '../auth/auth.service';
     <div class="remote-root">
 
       <!-- Header -->
-      <header class="header">
-        <a routerLink="/gallery" class="gallery-link">Galerie →</a>
-        <a routerLink="/settings" class="settings-link" *ngIf="isAdmin()">⚙</a>
-      </header>
+      <app-header
+        title="REMOTE"
+        [showRemote]="false"
+        [showSettings]="true"
+        backLink="/gallery"
+      >
+      </app-header>
 
       <!-- IDLE : bouton déclenchement -->
       <div class="idle-view" *ngIf="state === 'idle'">
-        <p class="hint">Appuyez pour lancer la séquence photo</p>
         <button class="start-btn" (click)="startSession()">
           <div class="btn-inner">
-            <span class="btn-icon">📷</span>
-            <span class="btn-label">PRENDRE<br>LES PHOTOS</span>
+            <span class="btn-label">START</span>
           </div>
         </button>
       </div>
@@ -154,7 +155,7 @@ import { AuthService } from '../auth/auth.service';
     .btn-icon { font-size: 40px; }
 
     .btn-label {
-      font-size: 16px;
+      font-size: 30px;
       font-weight: bold;
       letter-spacing: 3px;
       color: white;

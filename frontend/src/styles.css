@@ -52,3 +52,44 @@ app-settings {
   background: rgba(128, 144, 255, 0.3);
   border-radius: 2px;
 }
+
+/* Icon buttons - global */
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: 1px solid rgba(128, 144, 255, 0.2);
+  border-radius: 50%;
+  color: rgba(128, 144, 255, 0.6);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  border-color: #8090ff;
+  color: #8090ff;
+}
+
+.icon-btn.camera {
+  border-color: rgba(255, 107, 107, 0.3);
+  color: rgba(255, 107, 107, 0.6);
+}
+
+.icon-btn.camera:hover {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.icon-btn.logout {
+  border-color: rgba(255, 96, 96, 0.2);
+  color: rgba(255, 96, 96, 0.5);
+}
+
+.icon-btn.logout:hover {
+  border-color: #ff6060;
+  color: #ff6060;
+}
