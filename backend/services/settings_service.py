@@ -5,6 +5,7 @@ SETTINGS_FILE = "storage/settings.json"
 
 DEFAULT_SETTINGS = {
     "show_qrcode": True,
+    "remote_enabled": True,
     "selected_logo": "default",
     "strip_background": "#1a1a2e",
     "strip_background_image": None,
