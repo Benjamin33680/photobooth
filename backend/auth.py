@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 # Change cette clé en production
 SECRET_KEY = "photobooth-secret-key-change-in-production"
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24h
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 9  # 9h
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=False)

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { SessionStorageService } from './session-storage.service';
 
 export interface AuthUser {
   username: string;
@@ -11,6 +12,7 @@ export interface AuthUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private SESSION_KEY = 'photobooth_user';
   private _user = new BehaviorSubject<AuthUser | null>(null);
   user$ = this._user.asObservable();
 
@@ -18,22 +20,33 @@ export class AuthService {
     return `http://${window.location.hostname}:8000/api/auth`;
   }
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private session: SessionStorageService
+  ) {
+    // Restaure la session
+    const stored = this.session.get<AuthUser>(this.SESSION_KEY);
+    if (stored) this._user.next(stored);
+  }
 
   login(username: string, password: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/login`, { username, password }).pipe(
       tap((res) => {
-        this._user.next({
+        const user: AuthUser = {
           username: res.username,
           role: res.role,
           token: res.access_token,
-        });
+        };
+        this._user.next(user);
+        this.session.set(this.SESSION_KEY, user);
       })
     );
   }
 
   logout(): void {
     this._user.next(null);
+    this.session.remove(this.SESSION_KEY);
     this.router.navigate(['/login']);
   }
 
@@ -54,7 +67,7 @@ export class AuthService {
   }
 
   isLocalhost(): boolean {
-    return window.location.hostname === 'localhost' || 
-           window.location.hostname === '127.0.0.1';
+    return window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
   }
 }

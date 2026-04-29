@@ -31,7 +31,7 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       <!-- Loading -->
       <div *ngIf="loading" class="loading-state">
         <div class="spinner"></div>
-        <p>Chargement...</p>test
+        <p>Chargement...</p>
       </div>
 
       <!-- Empty state -->
