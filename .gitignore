@@ -2,9 +2,7 @@ __pycache__/
 *.py[cod]
 venv/
 .env
-backend/storage/photos/*.jpg
-backend/storage/photos/*.jpeg
-backend/storage/photos/*.png
+
 frontend/node_modules/
 frontend/dist/
 frontend/.angular/
@@ -12,7 +10,14 @@ frontend/.angular/
 Thumbs.db
 .vscode/
 # Storage - ignore files but keep folder structure
-backend/storage/photos/*
-backend/storage/logos/*
+backend/storage/photos/*.jpg
+backend/storage/photos/*.jpeg
+backend/storage/photos/*.png
+backend/storage/logos/*.jpg
+backend/storage/logos/*.jpeg
+backend/storage/logos/*.png
+backend/storage/backgrounds/*.jpg
+backend/storage/backgrounds/*.jpeg
+backend/storage/backgrounds/*.png
 backend/storage/backgrounds/*
 backend/storage/settings.json
