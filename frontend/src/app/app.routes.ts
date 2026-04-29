@@ -7,6 +7,7 @@ import { LoginComponent } from './auth/login.component';
 import { AdminGuard } from './auth/admin.guard';
 import { SettingsComponent } from './settings/settings.component';
 import { RemoteComponent } from './remote/remote.component';
+import { settingsGuard } from './settings/settings.guard';
 
 export const routes: Routes = [
   {
@@ -32,6 +33,7 @@ export const routes: Routes = [
     path: 'settings',
     component: SettingsComponent,
     canActivate: [AdminGuard],
+    canDeactivate: [settingsGuard],
   },
   { path: '**', redirectTo: '' },
 ];

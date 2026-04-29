@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { SettingsService, AppSettings, Cell, StripLayout } from './settings.service';
 import { AuthService } from '../auth/auth.service';
+import { ConfirmAction } from '../shared/confirm-dialog.component';
 
 @Component({
   selector: 'app-settings',
@@ -150,17 +151,21 @@ import { AuthService } from '../auth/auth.service';
 
       </div>
 
-      <!-- Confirm dialog -->
-      <div class="confirm-overlay" *ngIf="confirmType">
-        <div class="confirm-box">
-          <p class="confirm-msg">{{ confirmType === 'shutdown' ? 'Éteindre le Raspberry Pi ?' : 'Remettre les réglages par défaut ?' }}</p>
-          <p class="confirm-sub">{{ confirmType === 'shutdown' ? 'Le photobooth sera inaccessible jusqu\'au prochain démarrage.' : 'Tous vos réglages personnalisés seront perdus.' }}</p>
-          <div class="confirm-actions">
-            <button class="confirm-btn cancel" (click)="confirmType = null">Annuler</button>
-            <button class="confirm-btn ok" (click)="executeConfirm()">Confirmer</button>
-          </div>
-        </div>
-      </div>
+      <!-- Popup reset/shutdown -->
+      <app-confirm-dialog
+        [visible]="confirmType !== null"
+        [title]="getConfirmTitle()"
+        [message]="getConfirmMessage()"
+        [actions]="getConfirmActions()"
+      ></app-confirm-dialog>
+
+      <!-- Popup unsaved -->
+      <app-confirm-dialog
+        [visible]="showUnsavedConfirm"
+        title="Modifications non sauvegardées"
+        message="Voulez-vous sauvegarder avant de quitter ?"
+        [actions]="unsavedActions"
+      ></app-confirm-dialog>
 
       <!-- Toast -->
       <div class="toast" *ngIf="toastMsg">{{ toastMsg }}</div>
@@ -493,74 +498,6 @@ import { AuthService } from '../auth/auth.service';
       pointer-events: none;
     }
 
-    /* Confirm dialog */
-    .confirm-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(5,5,16,0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 200;
-    }
-
-    .confirm-box {
-      background: #0d0d1a;
-      border: 1px solid rgba(128,144,255,0.2);
-      padding: 48px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      max-width: 400px;
-      text-align: center;
-    }
-
-    .confirm-msg {
-      font-size: 18px;
-      letter-spacing: 3px;
-      color: #e0e6ff;
-      margin: 0;
-    }
-
-    .confirm-sub {
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: rgba(128,144,255,0.5);
-      margin: 0;
-      line-height: 1.6;
-    }
-
-    .confirm-actions {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-      margin-top: 16px;
-    }
-
-    .confirm-btn {
-      padding: 12px 32px;
-      font-size: 12px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .confirm-btn.cancel {
-      background: none;
-      border: 1px solid rgba(128,144,255,0.3);
-      color: rgba(128,144,255,0.6);
-    }
-    .confirm-btn.cancel:hover { border-color: #8090ff; color: #8090ff; }
-
-    .confirm-btn.ok {
-      background: rgba(255,96,96,0.1);
-      border: 1px solid rgba(255,96,96,0.4);
-      color: #ff6060;
-    }
-    .confirm-btn.ok:hover { background: rgba(255,96,96,0.2); }
-
     /* Toast */
     .toast {
       position: fixed;
@@ -594,6 +531,17 @@ export class SettingsComponent implements OnInit {
   toastMsg: string | null = null;
   dragIndex: number | null = null;
   hostname = window.location.hostname;
+  isDirty = false;
+  showUnsavedConfirm = false;
+
+  unsavedActions: ConfirmAction[] = [
+    { label: 'Annuler', type: 'cancel', action: () => this.unsavedCancel() },
+    { label: 'Quitter', type: 'warning', action: () => this.unsavedLeave() },
+    { label: 'Sauvegarder et quitter', type: 'primary', action: () => this.unsavedSaveAndLeave() },
+  ];
+
+  private initialSettings: string = '';
+  private unsavedResolve: ((value: boolean) => void) | null = null;
 
   get exporting(): boolean {
     return this.settingsService.isExporting;
@@ -608,11 +556,16 @@ export class SettingsComponent implements OnInit {
     this.settingsService.getSettings().subscribe(s => this.settings = s);
     this.settingsService.getLogos().subscribe(r => this.logos = r.logos);
     this.settingsService.getBackgrounds().subscribe(r => this.backgrounds = r.backgrounds);
+    this.settingsService.getSettings().subscribe(s => {
+      this.settings = s;
+      this.initialSettings = JSON.stringify(s); // Sauvegarde l'état initial
+    });
   }
 
   save(): void {
     if (!this.settings) return;
     this.settingsService.saveSettings(this.settings).subscribe(() => {
+      this.initialSettings = JSON.stringify(this.settings); // Reset après save
       this.showToast('Réglages sauvegardés ✓');
     });
   }
@@ -661,6 +614,10 @@ export class SettingsComponent implements OnInit {
       }
       this.showToast('Fond supprimé ✓');
     });
+  }
+
+  hasUnsavedChanges(): boolean {
+    return JSON.stringify(this.settings) !== this.initialSettings;
   }
 
   async exportPhotos(): Promise<void> {
@@ -724,5 +681,56 @@ export class SettingsComponent implements OnInit {
     if (this.settings) {
       this.settings.strip_layout = layout;
     }
+  }
+
+  showUnsavedDialog(): Promise<boolean> {
+    this.showUnsavedConfirm = true;
+    return new Promise(resolve => {
+      this.unsavedResolve = resolve;
+    });
+  }
+
+  unsavedCancel(): void {
+    this.showUnsavedConfirm = false;
+    if (this.unsavedResolve) this.unsavedResolve(false);
+  }
+
+  unsavedLeave(): void {
+    this.showUnsavedConfirm = false;
+    if (this.unsavedResolve) this.unsavedResolve(true);
+  }
+
+  getConfirmTitle(): string {
+    return this.confirmType === 'shutdown' ? 'Éteindre le Raspberry Pi ?' : 'Remettre les réglages par défaut ?';
+  }
+
+  getConfirmMessage(): string {
+    return this.confirmType === 'shutdown'
+      ? 'Le photobooth sera inaccessible jusqu\'au prochain démarrage.'
+      : 'Tous vos réglages personnalisés seront perdus.';
+  }
+
+  getConfirmActions(): ConfirmAction[] {
+    return [
+      { label: 'Annuler', type: 'cancel', action: () => this.confirmType = null },
+      { label: 'Confirmer', type: 'danger', action: () => this.executeConfirm() },
+    ];
+  }
+
+  async unsavedSaveAndLeave(): Promise<void> {
+    await this.saveAsync();
+    this.showUnsavedConfirm = false;
+    if (this.unsavedResolve) this.unsavedResolve(true);
+  }
+
+  private saveAsync(): Promise<void> {
+    return new Promise(resolve => {
+      if (!this.settings) { resolve(); return; }
+      this.settingsService.saveSettings(this.settings).subscribe(() => {
+        this.initialSettings = JSON.stringify(this.settings);
+        this.showToast('Réglages sauvegardés ✓');
+        resolve();
+      });
+    });
   }
 }

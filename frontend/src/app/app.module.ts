@@ -15,6 +15,7 @@ import { StripPreviewComponent } from './settings/strip-preview.component';
 import { RemoteComponent } from './remote/remote.component';
 import { MatIconModule } from '@angular/material/icon'
 import { AppHeaderComponent } from './shared/app-header.component';
+import { ConfirmDialogComponent } from './shared/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -27,19 +28,20 @@ import { AppHeaderComponent } from './shared/app-header.component';
     StripPreviewComponent,
     RemoteComponent,
     AppHeaderComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
     MatIconModule,
-    RouterModule.forRoot(routes),
+    RouterModule.forRoot(routes)
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true,
+      multi: true
     },
   ],
   bootstrap: [AppComponent],
