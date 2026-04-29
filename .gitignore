@@ -19,5 +19,4 @@ backend/storage/logos/*.png
 backend/storage/backgrounds/*.jpg
 backend/storage/backgrounds/*.jpeg
 backend/storage/backgrounds/*.png
-backend/storage/backgrounds/*
 backend/storage/settings.json
