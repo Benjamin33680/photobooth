@@ -11,3 +11,8 @@ frontend/.angular/
 .DS_Store
 Thumbs.db
 .vscode/
+# Storage - ignore files but keep folder structure
+backend/storage/photos/*
+backend/storage/logos/*
+backend/storage/backgrounds/*
+backend/storage/settings.json
