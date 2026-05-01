@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 
@@ -67,16 +67,6 @@ import { AuthService } from '../auth/auth.service';
       color: #e0e6ff;
     }
 
-    .back-link {
-      color: rgba(128,144,255,0.6);
-      text-decoration: none;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .back-link:hover { color: #8090ff; }
-
     .header-right {
       display: flex;
       align-items: center;
@@ -112,7 +102,7 @@ import { AuthService } from '../auth/auth.service';
     }
   `],
 })
-export class AppHeaderComponent implements OnInit {
+export class AppHeaderComponent {
   @Input() title = '';
   @Input() showRemote = true;
   @Input() showRefresh = false;
@@ -123,8 +113,6 @@ export class AppHeaderComponent implements OnInit {
   @Input() remoteEnabled = true;
 
   constructor(private auth: AuthService, private router: Router) { }
-
-  ngOnInit(): void { }
 
   isLocalhost(): boolean {
     return this.auth.isLocalhost();

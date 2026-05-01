@@ -15,8 +15,8 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
         [showSettings]="false"
         backLink="/settings"
       >
-        <button class="archive-btn" (click)="showNameInput = true">
-          + Archiver les photos
+        <button class="icon-btn" (click)="showNameInput = true" matTooltip="Archiver les photos">
+          <mat-icon>archive</mat-icon>
         </button>
       </app-header>
 
@@ -93,52 +93,6 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
       font-family: 'Courier New', monospace;
       overflow-y: auto;
     }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      padding: 20px 40px;
-      background: rgba(7,7,15,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(128,144,255,0.1);
-    }
-
-    .back-link {
-      color: rgba(128,144,255,0.6);
-      text-decoration: none;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .back-link:hover { color: #8090ff; }
-
-    .title {
-      flex: 1;
-      margin: 0;
-      font-size: 22px;
-      font-weight: 400;
-      letter-spacing: 8px;
-      color: #e0e6ff;
-    }
-
-    .archive-btn {
-      background: rgba(128,144,255,0.1);
-      border: 1px solid rgba(128,144,255,0.4);
-      color: #8090ff;
-      padding: 10px 20px;
-      font-size: 12px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .archive-btn:hover { background: rgba(128,144,255,0.2); }
 
     /* Loading */
     .loading-state {
@@ -328,8 +282,6 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
     }
 
     @media (max-width: 600px) {
-      .header { padding: 16px 20px; flex-wrap: wrap; gap: 12px; }
-      .title { font-size: 16px; }
       .archives-list { padding: 16px 20px; }
     }
   `]

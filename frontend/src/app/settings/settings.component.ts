@@ -196,52 +196,6 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
       // padding-bottom:3em;
     }
 
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      padding: 20px 40px;
-      background: rgba(7,7,15,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(128,144,255,0.1);
-    }
-
-    .back-link {
-      color: rgba(128,144,255,0.6);
-      text-decoration: none;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .back-link:hover { color: #8090ff; }
-
-    .title {
-      flex: 1;
-      margin: 0;
-      font-size: 22px;
-      font-weight: 400;
-      letter-spacing: 8px;
-      color: #e0e6ff;
-    }
-
-    .btn-save {
-      background: rgba(128,144,255,0.15);
-      border: 1px solid rgba(128,144,255,0.5);
-      color: #8090ff;
-      padding: 10px 28px;
-      font-size: 13px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-save:hover { background: rgba(128,144,255,0.25); }
-
     .content {
       max-width: 900px;
       margin: 0 auto;
@@ -332,13 +286,6 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
     }
     .input-number:focus { outline: none; border-color: #8090ff; }
 
-    .section-hint {
-      font-size: 12px;
-      letter-spacing: 2px;
-      color: rgba(128,144,255,0.4);
-      margin: 0;
-    }
-
     /* Toggles */
     .toggles { display: flex; flex-direction: column; gap: 16px; }
     .toggle-row {
@@ -357,22 +304,6 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
       accent-color: #8090ff;
       cursor: pointer;
     }
-
-    /* Radio */
-    .radio-group { display: flex; gap: 16px; flex-wrap: wrap; }
-    .radio-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 20px;
-      border: 1px solid rgba(128,144,255,0.1);
-      cursor: pointer;
-      font-size: 14px;
-      letter-spacing: 2px;
-      transition: border-color 0.2s;
-    }
-    .radio-row:hover { border-color: rgba(128,144,255,0.4); }
-    .radio-row input { accent-color: #8090ff; }
 
     /* Logo grid */
     .logo-grid {
@@ -453,33 +384,6 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
       color: rgba(128,144,255,0.4);
     }
 
-    /* Layout drag & drop */
-    .layout-grid {
-      display: grid;
-      gap: 8px;
-      background: rgba(128,144,255,0.05);
-      padding: 16px;
-      border: 1px solid rgba(128,144,255,0.1);
-      width: fit-content;
-      min-width: 400px;
-    }
-
-    .layout-cell {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 2px solid rgba(128,144,255,0.2);
-      font-size: 13px;
-      letter-spacing: 2px;
-      cursor: grab;
-      transition: all 0.2s;
-      min-height: 120px;
-    }
-    .layout-cell:active { cursor: grabbing; }
-    .layout-cell.logo-cell { background: rgba(128,144,255,0.1); color: #8090ff; }
-    .layout-cell.photo-cell { background: rgba(30,40,80,0.5); color: #c0c8ff; }
-    .layout-cell.drag-over { border-color: #8090ff; background: rgba(128,144,255,0.2); }
-
     /* Actions */
     .actions-grid {
       display: flex;
@@ -549,10 +453,7 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
 .action-btn.archives:hover { background: rgba(128,144,255,0.08); }
 
     @media (max-width: 600px) {
-      .header { padding: 16px 20px; }
-      .title { font-size: 16px; letter-spacing: 4px; }
       .content { padding: 24px 16px; }
-      .layout-grid { min-width: unset; width: 100%; }
     }
   `],
 })
@@ -562,11 +463,9 @@ export class SettingsComponent implements OnInit {
   backgrounds: { filename: string; url: string }[] = [];
   confirmType: 'shutdown' | 'reset' | null = null;
   toastMsg: string | null = null;
-  dragIndex: number | null = null;
   hostname = window.location.hostname;
   isDirty = false;
   showUnsavedConfirm = false;
-  storage_quota_mb: number = 10240;
 
   unsavedActions: ConfirmAction[] = [
     { label: 'Annuler', type: 'cancel', action: () => this.unsavedCancel() },
@@ -686,24 +585,6 @@ export class SettingsComponent implements OnInit {
         this.showToast('Arrêt en cours...');
       });
     }
-  }
-
-  // Drag & drop
-  onDragStart(index: number): void {
-    this.dragIndex = index;
-  }
-
-  onDrop(targetIndex: number): void {
-    if (this.dragIndex === null || !this.settings) return;
-    const cells = [...this.settings.strip_layout.cells];
-    const draggedCol = cells[this.dragIndex].col;
-    const draggedRow = cells[this.dragIndex].row;
-    cells[this.dragIndex].col = cells[targetIndex].col;
-    cells[this.dragIndex].row = cells[targetIndex].row;
-    cells[targetIndex].col = draggedCol;
-    cells[targetIndex].row = draggedRow;
-    this.settings.strip_layout.cells = cells;
-    this.dragIndex = null;
   }
 
   showToast(msg: string): void {

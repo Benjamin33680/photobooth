@@ -383,43 +383,9 @@ import { SettingsService } from '../settings/settings.service';
       line-height: 1.6;
     }
 
-    .result-actions {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .result-hint {
-      font-size: 20px;
-      letter-spacing: 4px;
-      color: rgba(200,210,255,0.7);
-      margin: 0;
-      text-transform: uppercase;
-      animation: blink 2s ease-in-out infinite;
-    }
-
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
-    }
-
-    .download-btn {
-      display: inline-block;
-      padding: 12px 32px;
-      border: 1px solid rgba(128,144,255,0.5);
-      color: #8090ff;
-      text-decoration: none;
-      font-size: 16px;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      transition: all 0.2s;
-      pointer-events: all;
-    }
-
-    .download-btn:hover {
-      background: rgba(128,144,255,0.1);
-      border-color: #8090ff;
     }
 
     /* Error toast */
@@ -463,7 +429,6 @@ export class KioskComponent implements OnInit, OnDestroy {
   currentPhotoIndex = 0;
   isFlashing = false;
   errorMessage: string | null = null;
-  photoRange = [0, 1, 2];
   qrCodeDataUrl: string | null = null;
   hostname = window.location.hostname
   showQrcode = true;

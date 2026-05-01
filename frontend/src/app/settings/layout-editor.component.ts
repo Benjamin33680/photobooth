@@ -317,10 +317,6 @@ export class LayoutEditorComponent implements OnChanges {
     return Array.from({ length: n }, (_, i) => i);
   }
 
-  getPhotoOptions(): number[] {
-    return Array.from({ length: this.photoCount }, (_, i) => i);
-  }
-
   asType(t: string): 'logo' | 'photo' | 'empty' {
     return t as 'logo' | 'photo' | 'empty';
   }

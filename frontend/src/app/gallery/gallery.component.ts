@@ -128,53 +128,6 @@ import { GalleryService, PhotoMeta, StorageStats } from './gallery.service';
       padding-bottom: 3em;
     }
 
-    /* Header */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 24px;
-      background: rgba(7,7,15,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(128,144,255,0.1);
-    }
-
-    .title {
-      flex: 1;
-      margin: 0;
-      font-size: 22px;
-      font-weight: 400;
-      letter-spacing: 10px;
-      color: #e0e6ff;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .back-link {
-      color: rgba(128, 144, 255, 0.6);
-      text-decoration: none;
-      font-size: 13px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .back-link:hover { color: #8090ff; }
-
-    .storage-stats {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 200px;
-    }
-
-    
     .stats-text {
       display: flex;
       align-items: center;
@@ -424,28 +377,9 @@ import { GalleryService, PhotoMeta, StorageStats } from './gallery.service';
     }
 
     @media (max-width: 600px) {
-      .header { 
-        padding: 10px 16px;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .header-right {
-        min-width: 5em;
-      }
-      .title { 
-        font-size: 14px; 
-        letter-spacing: 4px; 
-      }
-      .grid { 
-        grid-template-columns: repeat(1, 1fr); 
-      }
-
+      .grid { grid-template-columns: repeat(1, 1fr); }
       .storage-banner { padding: 10px 16px; align-items: flex-start; }
       .storage-bar { width: 100%; }
-      
-      .header-right {
-        gap: 12px;
-      }
     }
   `],
 })
@@ -559,11 +493,4 @@ export class GalleryComponent implements OnInit {
     return this.auth.isAdmin();
   }
 
-  isLocalhost(): boolean {
-    return this.auth.isLocalhost();
-  }
-
-  logout(): void {
-    this.auth.logout();
-  }
 }
