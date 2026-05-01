@@ -119,7 +119,7 @@ class CameraService:
         if PICAMERA_AVAILABLE and self._camera:
             try:
                 frame = self._camera.capture_array()
-                img = Image.fromarray(frame)
+                img = Image.fromarray(frame).transpose(Image.FLIP_LEFT_RIGHT)
                 buf = io.BytesIO()
                 img.save(buf, format="JPEG", quality=75)
                 return buf.getvalue()
@@ -150,8 +150,8 @@ class CameraService:
             self._camera.configure(still_config)
             self._camera.start()
             array = self._camera.capture_array()
-            img = Image.fromarray(array)
-            
+            img = Image.fromarray(array).transpose(Image.FLIP_LEFT_RIGHT)
+
             # Return to preview config
             self._camera.stop()
             preview_config = self._camera.create_preview_configuration(
