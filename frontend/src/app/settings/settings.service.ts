@@ -26,6 +26,7 @@ export interface AppSettings {
   strip_background: string;
   strip_background_image: string | null;
   strip_layout: StripLayout;
+  storage_quota_mb: number;
 }
 
 @Injectable({ providedIn: 'root' })

@@ -6,7 +6,7 @@ import {
   inject,
 } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
-import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
+import { GalleryService, PhotoMeta, StorageStats } from './gallery.service';
 
 @Component({
   selector: 'app-gallery',
@@ -20,13 +20,24 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
         [showRefresh]="true"
         [onRefreshFn]="refresh.bind(this)"
         [remoteEnabled]="remoteEnabled"
-      >
-        <div class="stats" *ngIf="stats">
-          <span>{{ stats.total_photos }} photos</span>
+      ></app-header>
+
+      <div class="storage-banner" *ngIf="storageStats">
+        <div class="stats-text">
+          <span>{{ storageStats.total_photos }} photos</span>
           <span class="sep">·</span>
-          <span>{{ stats.total_size_mb }} MB</span>
+          <span>{{ storageStats.used_mb }} MB / {{ storageStats.quota_gb }} GB</span>
+          <span class="sep">·</span>
+          <span>{{ storageStats.percent }}%</span>
         </div>
-      </app-header>
+        <div class="storage-bar">
+          <div
+            class="storage-bar-fill"
+            [style.width]="storageStats.percent + '%'"
+            [class.warning]="storageStats.percent > 80"
+          ></div>
+        </div>
+      </div>
 
       <!-- Loading -->
       <div *ngIf="loading" class="loading-state">
@@ -156,13 +167,52 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
     }
     .back-link:hover { color: #8090ff; }
 
-    .stats {
-      font-size: 13px;
-      color: rgba(128, 144, 255, 0.5);
-      letter-spacing: 2px;
+    .storage-stats {
       display: flex;
-      gap: 8px;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 200px;
     }
+
+    
+    .stats-text {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      color: rgba(128, 144, 255, 0.5);
+    }
+
+    .storage-bar {
+      width: 40%;
+      height: 3px;
+      background: rgba(128, 144, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .storage-bar-fill {
+      height: 100%;
+      background: rgba(128, 144, 255, 0.6);
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    .storage-bar-fill.warning {
+      background: rgba(255, 200, 80, 0.7);
+    }
+
+    .storage-banner {
+      padding: 10px 40px;
+      background: rgba(7, 7, 15, 0.8);
+      border-bottom: 1px solid rgba(128, 144, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
     .sep { opacity: 0.4; }
 
     /* Loading */
@@ -389,9 +439,10 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
       .grid { 
         grid-template-columns: repeat(1, 1fr); 
       }
-      .stats {
-        display: none;
-      }
+
+      .storage-banner { padding: 10px 16px; align-items: flex-start; }
+      .storage-bar { width: 100%; }
+      
       .header-right {
         gap: 12px;
       }
@@ -400,7 +451,7 @@ import { GalleryService, PhotoMeta, GalleryStats } from './gallery.service';
 })
 export class GalleryComponent implements OnInit {
   photos: PhotoMeta[] = [];
-  stats: GalleryStats | null = null;
+  storageStats: StorageStats | null = null;
   loading = true;
   hasMore = false;
   lightboxPhoto: PhotoMeta | null = null;
@@ -418,7 +469,7 @@ export class GalleryComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadPhotos();
-    this.loadStats();
+    this.loadStorageStats();
     this.checkRemoteEnabled();
   }
 
@@ -453,18 +504,11 @@ export class GalleryComponent implements OnInit {
     this.loadPhotos();
   }
 
-  loadStats(): void {
-    this.galleryService.getStats().subscribe({
-      next: (s) => { this.stats = s; this.cdr.markForCheck(); },
-      error: () => { },
-    });
-  }
-
   refresh(): void {
     this.photos = [];
     this.offset = 0;
     this.loadPhotos();
-    this.loadStats();
+    this.loadStorageStats();
   }
 
   getUrl(photo: PhotoMeta): string {
@@ -498,9 +542,16 @@ export class GalleryComponent implements OnInit {
     this.galleryService.deletePhoto(photo.id).subscribe({
       next: () => {
         this.photos = this.photos.filter((p) => p.id !== photo.id);
-        if (this.stats) this.stats.total_photos--;
+        this.loadStorageStats();
         this.cdr.markForCheck();
       },
+    });
+  }
+
+  loadStorageStats(): void {
+    this.galleryService.getStorageStats().subscribe({
+      next: (s) => { this.storageStats = s; this.cdr.markForCheck(); },
+      error: () => { },
     });
   }
 

@@ -133,6 +133,17 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
           ></app-strip-preview>
         </section>
 
+        <div class="panel-group">
+          <label>Espace alloué aux photos (MB)</label>
+          <input
+            type="number"
+            class="input-number"
+            [(ngModel)]="settings.storage_quota_mb"
+            min="100"
+            step="100"
+          />
+        </div>
+
         <!-- Section Actions -->
         <section class="section">
           <h2 class="section-title">Actions</h2>
@@ -179,7 +190,7 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
       background: #07070f;
       color: #c0c8ff;
       font-family: 'Courier New', monospace;
-      padding-bottom:3em;
+      // padding-bottom:3em;
     }
 
     .header {
@@ -306,6 +317,17 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
       color: #8090ff;
     }
     .add-item mat-icon { font-size: 24px; }
+
+    .input-number {
+      background: rgba(128, 144, 255, 0.05);
+      border: 1px solid rgba(128, 144, 255, 0.2);
+      color: #e0e6ff;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      width: 100%;
+    }
+    .input-number:focus { outline: none; border-color: #8090ff; }
 
     .section-hint {
       font-size: 12px;
@@ -533,6 +555,7 @@ export class SettingsComponent implements OnInit {
   hostname = window.location.hostname;
   isDirty = false;
   showUnsavedConfirm = false;
+  storage_quota_mb: number = 10240;
 
   unsavedActions: ConfirmAction[] = [
     { label: 'Annuler', type: 'cancel', action: () => this.unsavedCancel() },

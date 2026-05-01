@@ -7,6 +7,7 @@ DEFAULT_SETTINGS = {
     "show_qrcode": True,
     "remote_enabled": True,
     "selected_logo": "default",
+    "storage_quota_mb": 10240,
     "strip_background": "#1a1a2e",
     "strip_background_image": None,
     "strip_layout": {

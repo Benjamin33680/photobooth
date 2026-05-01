@@ -581,7 +581,7 @@ export class KioskComponent implements OnInit, OnDestroy {
   async generateQrCode(photoId: string): Promise<void> {
     // Force l'IP du Pi pour que le téléphone puisse accéder
     const host = window.location.hostname === 'localhost'
-      ? '192.168.1.50'
+      ? '192.168.1.40'
       : window.location.hostname;
     const downloadUrl = `http://${host}:8000/api/gallery/${photoId}/download`;
     try {
