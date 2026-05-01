@@ -154,6 +154,9 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
             <button class="action-btn reset" (click)="confirmReset()">
               ↺ Réinitialiser les réglages
             </button>
+            <a routerLink="/archives" class="action-btn archives">
+              📦 Gérer les archives
+            </a>
             <button class="action-btn shutdown" (click)="confirmShutdown()">
               ⏻ Éteindre le Pi
             </button>
@@ -536,6 +539,14 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
       animation: fadeIn 0.3s ease;
     }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+    .action-btn.archives {
+      border: 1px solid rgba(128,144,255,0.3);
+      color: #8090ff;
+      text-decoration: none;
+    }
+       
+.action-btn.archives:hover { background: rgba(128,144,255,0.08); }
 
     @media (max-width: 600px) {
       .header { padding: 16px 20px; }

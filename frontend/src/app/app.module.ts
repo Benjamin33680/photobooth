@@ -16,6 +16,7 @@ import { RemoteComponent } from './remote/remote.component';
 import { MatIconModule } from '@angular/material/icon'
 import { AppHeaderComponent } from './shared/app-header.component';
 import { ConfirmDialogComponent } from './shared/confirm-dialog.component';
+import { ArchivesComponent } from './archives/archives.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { ConfirmDialogComponent } from './shared/confirm-dialog.component';
     StripPreviewComponent,
     RemoteComponent,
     AppHeaderComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ArchivesComponent,
   ],
   imports: [
     BrowserModule,
