@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { GalleryService, PhotoMeta, StorageStats } from './gallery.service';
+import { ConfigService } from '../shared/config.service';
 
 @Component({
   selector: 'app-gallery',
@@ -396,7 +397,8 @@ export class GalleryComponent implements OnInit {
 
   constructor(
     private galleryService: GalleryService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private config: ConfigService
   ) { }
 
   remoteEnabled = false;
@@ -409,7 +411,7 @@ export class GalleryComponent implements OnInit {
 
   checkRemoteEnabled(): void {
     const host = window.location.hostname;
-    fetch(`http://${host}:8000/api/settings`)
+    fetch(`${this.config.apiUrl}/api/settings`)
       .then(r => r.json())
       .then(cfg => {
         this.remoteEnabled = cfg.remote_enabled ?? true;

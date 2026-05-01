@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfigService } from '../shared/config.service';
 
 export interface PhotoMeta {
   id: string;
@@ -28,34 +29,33 @@ export interface GalleryResponse {
 @Injectable({ providedIn: 'root' })
 export class GalleryService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private config: ConfigService) { }
 
-  private get base(): string {
-    return `http://${window.location.hostname}:8000/api/gallery`;
+  private get apiUrl(): string {
+    return `${this.config.apiUrl}/api/gallery`;
   }
 
   getPhotos(limit = 20, offset = 0): Observable<GalleryResponse> {
     const params = new HttpParams()
       .set('limit', limit)
       .set('offset', offset);
-    return this.http.get<GalleryResponse>(this.base, { params });
+    return this.http.get<GalleryResponse>(this.apiUrl, { params });
   }
 
   deletePhoto(id: string): Observable<any> {
-    return this.http.delete(`${this.base}/${id}`);
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
   getDownloadUrl(id: string): string {
-    const apiUrl = `http://${window.location.hostname}:8000`;
-    return `${apiUrl}/api/gallery/${id}/download`;
+    return `${this.apiUrl}/api/gallery/${id}/download`;
   }
 
   getPhotoUrl(photo: PhotoMeta): string {
-    const apiUrl = `http://${window.location.hostname}:8000`;
-    return `${apiUrl}${photo.url}`;
+    const url = photo.url.startsWith('/') ? photo.url : `/${photo.url}`;
+    return `${this.config.apiUrl}${url}`;
   }
 
   getStorageStats(): Observable<StorageStats> {
-    return this.http.get<StorageStats>(`${this.base}/storage/stats`);
+    return this.http.get<StorageStats>(`${this.apiUrl}/storage/stats`);
   }
 }

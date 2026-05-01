@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PhotoboothService, BoothState } from '../kiosk/photobooth.service';
 import { AuthService } from '../auth/auth.service';
+import { ConfigService } from '../shared/config.service';
 
 @Component({
   selector: 'app-remote',
@@ -319,7 +320,12 @@ export class RemoteComponent implements OnInit, OnDestroy {
   constructor(
     private booth: PhotoboothService,
     private auth: AuthService,
+    private config: ConfigService
   ) { }
+
+  private get apiUrl(): string {
+    return `${this.config.apiUrl}/api/archives`;
+  }
 
   ngOnInit(): void {
     this.booth.connect();
@@ -342,7 +348,7 @@ export class RemoteComponent implements OnInit, OnDestroy {
       setTimeout(() => this.errorMessage = null, 4000);
     }));
 
-    fetch(`http://${this.hostname}:8000/api/settings`)
+    fetch(`${this.apiUrl}/api/settings`)
       .then(r => r.json())
       .then(cfg => {
         this.photosTotal = cfg.strip_layout.cells.filter(
@@ -353,7 +359,7 @@ export class RemoteComponent implements OnInit, OnDestroy {
 
   async downloadPhoto(): Promise<void> {
     if (!this.resultUrl) return;
-    const url = `http://${this.hostname}:8000${this.resultUrl}`;
+    const url = `${this.apiUrl}/${this.resultUrl}`;
     const res = await fetch(url);
     const blob = await res.blob();
     const a = document.createElement('a');

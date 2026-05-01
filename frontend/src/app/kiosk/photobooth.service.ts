@@ -1,6 +1,7 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { ConfigService } from '../shared/config.service';
 
 export type BoothState =
   | 'idle'
@@ -36,12 +37,11 @@ export class PhotoboothService implements OnDestroy {
   readonly error$ = new Subject<string>();
   readonly captureFlash$ = new Subject<void>();
 
-  // ---------------------------------------------------------------- //
-
+  constructor(private config: ConfigService) { }
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
-    const url = `ws://192.168.1.40:8000/api/camera/ws`;
+    const url = `${this.config.wsUrl}/api/camera/ws`;
 
     this.ws = new WebSocket(url);
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfigService } from '../shared/config.service';
 
 export interface Cell {
   id: number;
@@ -33,58 +34,58 @@ export interface AppSettings {
 export class SettingsService {
   isExporting = false;
 
-  private get base(): string {
-    return `http://${window.location.hostname}:8000/api/settings`;
+  constructor(private http: HttpClient, private config: ConfigService) { }
+
+  private get apiUrl(): string {
+    return `${this.config.apiUrl}/api/settings`;
   }
 
-  private get storageBase(): string {
-    return `http://${window.location.hostname}:8000`;
+  private get storageApiUrl(): string {
+    return this.config.apiUrl;
   }
-
-  constructor(private http: HttpClient) { }
 
   getSettings(): Observable<AppSettings> {
-    return this.http.get<AppSettings>(this.base);
+    return this.http.get<AppSettings>(this.apiUrl);
   }
 
   saveSettings(data: AppSettings): Observable<AppSettings> {
-    return this.http.post<AppSettings>(this.base, data);
+    return this.http.post<AppSettings>(this.apiUrl, data);
   }
 
   resetSettings(): Observable<AppSettings> {
-    return this.http.post<AppSettings>(`${this.base}/reset`, {});
+    return this.http.post<AppSettings>(`${this.apiUrl}/reset`, {});
   }
 
   getLogos(): Observable<{ logos: string[] }> {
-    return this.http.get<{ logos: string[] }>(`${this.base}/logos`);
+    return this.http.get<{ logos: string[] }>(`${this.apiUrl}/logos`);
   }
 
   uploadLogo(file: File): Observable<any> {
     const fd = new FormData();
     fd.append('file', file);
-    return this.http.post(`${this.base}/logo`, fd);
+    return this.http.post(`${this.apiUrl}/logo`, fd);
   }
 
   deleteLogo(filename: string): Observable<any> {
-    return this.http.delete(`${this.base}/logo/${encodeURIComponent(filename)}`);
+    return this.http.delete(`${this.apiUrl}/logo/${encodeURIComponent(filename)}`);
   }
 
   getBackgrounds(): Observable<{ backgrounds: { filename: string; url: string }[] }> {
-    return this.http.get<any>(`${this.base}/backgrounds`);
+    return this.http.get<any>(`${this.apiUrl}/backgrounds`);
   }
 
   uploadBackground(file: File): Observable<any> {
     const fd = new FormData();
     fd.append('file', file);
-    return this.http.post(`${this.base}/background`, fd);
+    return this.http.post(`${this.apiUrl}/background`, fd);
   }
 
   deleteBackground(filename: string): Observable<any> {
-    return this.http.delete(`${this.base}/background/${encodeURIComponent(filename)}`);
+    return this.http.delete(`${this.apiUrl}/background/${encodeURIComponent(filename)}`);
   }
 
   async exportPhotos(token: string): Promise<void> {
-    const url = `${this.base}/export`;
+    const url = `${this.apiUrl}/export`;
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -102,15 +103,15 @@ export class SettingsService {
   }
 
   shutdown(): Observable<any> {
-    return this.http.post(`${this.base}/shutdown`, {});
+    return this.http.post(`${this.apiUrl}/shutdown`, {});
   }
 
   getLogoUrl(logo: string): string {
     if (logo === 'default') return '';
-    return `${this.storageBase}/logos/${logo}`;
+    return `${this.storageApiUrl}/logos/${logo}`;
   }
 
   getBackgroundUrl(filename: string): string {
-    return `${this.storageBase}/backgrounds/${encodeURIComponent(filename)}`;
+    return `${this.storageApiUrl}/backgrounds/${encodeURIComponent(filename)}`;
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ConfigService } from '../shared/config.service';
 
 export interface Archive {
   filename: string;
@@ -11,26 +12,29 @@ export interface Archive {
 
 @Injectable({ providedIn: 'root' })
 export class ArchivesService {
-  private get base(): string {
-    return `http://${window.location.hostname}:8000/api/archives`;
+
+  constructor(private http: HttpClient, private config: ConfigService) { }
+
+
+  private get apiUrl(): string {
+    return `${this.config.apiUrl}/api/archives`;
   }
 
-  constructor(private http: HttpClient) {}
 
   getArchives(): Observable<{ archives: Archive[] }> {
-    return this.http.get<{ archives: Archive[] }>(this.base);
+    return this.http.get<{ archives: Archive[] }>(this.apiUrl);
   }
 
   deleteArchive(filename: string): Observable<any> {
-    return this.http.delete(`${this.base}/${filename}`);
+    return this.http.delete(`${this.apiUrl}/${filename}`);
   }
 
   createArchive(name: string): Observable<any> {
-    return this.http.post(`${this.base}/create`, { name });
+    return this.http.post(`${this.apiUrl}/create`, { name });
   }
 
   async downloadArchive(filename: string, token: string): Promise<void> {
-    const url = `${this.base}/${filename}/download`;
+    const url = `${this.apiUrl}/${filename}/download`;
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     });

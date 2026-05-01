@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { PhotoboothService, BoothState } from './photobooth.service';
 import QRCode from 'qrcode';
 import { SettingsService } from '../settings/settings.service';
+import { ConfigService } from '../shared/config.service';
 
 @Component({
   selector: 'app-kiosk',
@@ -440,7 +441,8 @@ export class KioskComponent implements OnInit, OnDestroy {
 
   constructor(
     private booth: PhotoboothService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private config: ConfigService
   ) { }
 
   ngOnInit(): void {
@@ -544,11 +546,7 @@ export class KioskComponent implements OnInit, OnDestroy {
   }
 
   async generateQrCode(photoId: string): Promise<void> {
-    // Force l'IP du Pi pour que le téléphone puisse accéder
-    const host = window.location.hostname === 'localhost'
-      ? '192.168.1.40'
-      : window.location.hostname;
-    const downloadUrl = `http://${host}:8000/api/gallery/${photoId}/download`;
+    const downloadUrl = `${this.config.apiUrl}/api/gallery/${photoId}/download`;
     try {
       this.qrCodeDataUrl = await QRCode.toDataURL(downloadUrl, {
         width: 200,

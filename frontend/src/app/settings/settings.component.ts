@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { SettingsService, AppSettings, Cell, StripLayout } from './settings.service';
 import { AuthService } from '../auth/auth.service';
 import { ConfirmAction } from '../shared/confirm-dialog.component';
+import { ConfigService } from '../shared/config.service';
 
 @Component({
   selector: 'app-settings',
@@ -129,7 +130,7 @@ import { ConfirmAction } from '../shared/confirm-dialog.component';
             [layout]="settings.strip_layout"
             [bgColor]="settings.strip_background"
             [bgImageUrl]="settings.strip_background_image ? getBgUrl(settings.strip_background_image) : null"
-            [logoBaseUrl]="'http://' + hostname + ':8000'"
+            [logoBaseUrl]="config.apiUrl"
           ></app-strip-preview>
         </section>
 
@@ -463,7 +464,6 @@ export class SettingsComponent implements OnInit {
   backgrounds: { filename: string; url: string }[] = [];
   confirmType: 'shutdown' | 'reset' | null = null;
   toastMsg: string | null = null;
-  hostname = window.location.hostname;
   isDirty = false;
   showUnsavedConfirm = false;
 
@@ -483,6 +483,7 @@ export class SettingsComponent implements OnInit {
   constructor(
     private settingsService: SettingsService,
     private auth: AuthService,
+    public config: ConfigService
   ) { }
 
   ngOnInit(): void {
