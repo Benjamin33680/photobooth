@@ -5,6 +5,8 @@ deploy:
   stage: deploy
   only:
     - main
+  tags:
+    - photobooth-pi
   script:
     - cd /home/benji/photobooth
     - git pull origin main
