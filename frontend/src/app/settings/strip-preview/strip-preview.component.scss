@@ -1,0 +1,52 @@
+.preview-root {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-label {
+  font-size: 11px;
+  letter-spacing: 4px;
+  color: rgba(128, 144, 255, 0.4);
+  margin: 0;
+}
+
+.preview-strip {
+  display: grid;
+  gap: 4px;
+  padding: 8px;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 1px solid rgba(128, 144, 255, 0.15);
+  background-size: cover;
+  background-position: center;
+}
+
+.preview-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
+
+  &.logo-cell  { background: rgba(128, 144, 255, 0.08); border: 1px solid rgba(128, 144, 255, 0.2); }
+  &.photo-cell { background: rgba(40, 50, 100, 0.4);    border: 2px solid rgba(255, 255, 255, 0.2); }
+  &.empty-cell { background: rgba(20, 20, 30, 0.2);     border: 1px dashed rgba(128, 144, 255, 0.1); }
+}
+
+.cell-icon  { font-size: 16px; }
+
+.cell-label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: rgba(200, 210, 255, 0.6);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.logo-img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}

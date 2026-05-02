@@ -1,0 +1,87 @@
+<div
+  class="kiosk-root"
+  [class.flash]="isFlashing"
+  (click)="onScreenTap()"
+>
+  <!-- Live preview / result image -->
+  <div class="preview-container">
+    <img
+      *ngIf="previewFrame || resultStrip"
+      [src]="resultStrip || previewFrame"
+      class="preview-img"
+      [class.result-mode]="state === 'result'"
+      alt="Preview"
+    />
+    <div *ngIf="!previewFrame && !resultStrip" class="no-signal">
+      <span class="camera-icon">📷</span>
+      <p>Connexion caméra...</p>
+    </div>
+  </div>
+
+  <!-- Overlay by state -->
+  <div class="overlay" [ngSwitch]="state">
+
+    <!-- IDLE: tap to start -->
+    <div *ngSwitchCase="'idle'" class="overlay-idle">
+      <div class="idle-prompt">
+        <div class="pulse-ring"></div>
+        <div class="tap-icon">✦</div>
+        <p class="tap-text">TOUCHEZ POUR COMMENCER</p>
+      </div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div *ngSwitchCase="'countdown'" class="overlay-countdown">
+      <div class="photo-dots">
+        <span
+          *ngFor="let i of getPhotoRange()"
+          class="dot"
+          [class.active]="i <= currentPhotoIndex"
+          [class.current]="i === currentPhotoIndex"
+        ></span>
+      </div>
+      <div class="countdown-number" [attr.data-value]="countdownValue">
+        {{ countdownValue }}
+      </div>
+      <p class="photo-label">Photo {{ currentPhotoIndex + 1 }} / {{ photosTotal }}</p>
+    </div>
+
+    <!-- CAPTURE FLASH -->
+    <div *ngSwitchCase="'capture'" class="overlay-capture">
+      <div class="shutter-text">📸</div>
+    </div>
+
+    <!-- PROCESSING -->
+    <div *ngSwitchCase="'processing'" class="overlay-processing">
+      <div class="spinner"></div>
+      <p>Assemblage en cours...</p>
+    </div>
+
+    <!-- RESULT -->
+    <div *ngSwitchCase="'result'" class="overlay-result">
+      <div class="result-hint-container">
+        <p class="result-hint">Touchez pour recommencer</p>
+      </div>
+      <div class="qr-container" *ngIf="qrCodeDataUrl && showQrcode">
+        <p class="qr-label">SCANNEZ CE QR CODE POUR TÉLÉCHARGER LA PHOTO</p>
+        <img [src]="qrCodeDataUrl" class="qr-code" alt="QR Code" />
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Error toast -->
+  <div *ngIf="errorMessage" class="error-toast">
+    ⚠ {{ errorMessage }}
+  </div>
+
+  <!-- Gallery link (corner) -->
+  <a
+    href="/gallery"
+    class="gallery-link"
+    *ngIf="state === 'idle' || state === 'result'"
+    (click)="$event.stopPropagation()"
+  >
+    Galerie →
+  </a>
+</div>

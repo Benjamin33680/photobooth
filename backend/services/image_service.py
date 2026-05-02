@@ -145,11 +145,3 @@ class ImageService:
         hex_color = hex_color.lstrip("#")
         return tuple(int(hex_color[i: i + 2], 16) for i in (0, 2, 4))
 
-    @staticmethod
-    def _rounded_corners(img: Image.Image, radius: int) -> Image.Image:
-        img = img.convert("RGBA")
-        mask = Image.new("L", img.size, 0)
-        draw = ImageDraw.Draw(mask)
-        draw.rounded_rectangle([0, 0, img.width, img.height], radius=radius, fill=255)
-        img.putalpha(mask)
-        return img

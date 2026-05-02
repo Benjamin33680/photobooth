@@ -1,0 +1,17 @@
+<div class="confirm-overlay" *ngIf="visible">
+  <div class="confirm-box">
+    <p class="confirm-msg">{{ title }}</p>
+    <p class="confirm-sub" *ngIf="message">{{ message }}</p>
+    <div class="confirm-actions">
+      <button
+        *ngFor="let btn of actions"
+        class="confirm-btn"
+        [class.cancel]="btn.type === 'cancel'"
+        [class.danger]="btn.type === 'danger'"
+        [class.warning]="btn.type === 'warning'"
+        [class.primary]="btn.type === 'primary'"
+        (click)="btn.action()"
+      >{{ btn.label }}</button>
+    </div>
+  </div>
+</div>

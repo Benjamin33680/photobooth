@@ -1,0 +1,91 @@
+<div class="gallery-root">
+
+  <!-- Header -->
+  <app-header title="GALERIE" [showRefresh]="true" [onRefreshFn]="refresh.bind(this)"
+    [remoteEnabled]="remoteEnabled"></app-header>
+
+  <div class="storage-banner" *ngIf="storageStats">
+    <div class="stats-text">
+      <span>{{ storageStats.total_photos }} photos</span>
+      <span class="sep">·</span>
+      <span>{{ storageStats.used_mb }} MB / {{ storageStats.quota_gb }} GB</span>
+      <span class="sep">·</span>
+      <span>{{ storageStats.percent }}%</span>
+    </div>
+    <div class="storage-bar">
+      <div class="storage-bar-fill" [style.width]="storageStats.percent + '%'"
+        [class.warning]="storageStats.percent > 80"></div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && photos.length === 0" class="empty-state">
+    <span class="empty-icon">📷</span>
+    <p>Aucune photo pour l'instant.</p>
+    <a routerLink="/" class="cta-btn">Prendre des photos →</a>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid" *ngIf="!loading && photos.length > 0">
+    <div class="card" *ngFor="let photo of photos" (click)="openLightbox(photo)">
+      <div class="card-img-wrap">
+        <img [src]="getUrl(photo)" [alt]="photo.filename" loading="lazy" class="card-img" />
+        <div class="card-overlay">
+          <span class="view-icon">⊕</span>
+        </div>
+      </div>
+      <div class="card-meta">
+        <span class="card-date">{{ formatDate(photo.created_at) }}</span>
+        <div class="card-actions">
+          <a [href]="getDownloadUrl(photo.id)" download class="action-btn" (click)="$event.stopPropagation()"
+            title="Télécharger">↓</a>
+          <button *ngIf="isAdmin()" class="action-btn danger" (click)="deletePhoto($event, photo)"
+            title="Supprimer">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load more -->
+  <div class="load-more" *ngIf="hasMore && !loading">
+    <button class="load-more-btn" (click)="loadMore()">
+      Charger plus
+    </button>
+  </div>
+
+  <!-- FAB QR code -->
+  <button
+    *ngIf="tunnelQrCode"
+    [class]="isLocalhost() ? 'fab qr-local' : 'fab qr-remote'"
+    (click)="showQrOverlay = true"
+    matTooltip="QR code d'accès"
+  >
+    <mat-icon>qr_code</mat-icon>
+  </button>
+
+  <!-- Overlay QR code -->
+  <div class="qr-overlay" *ngIf="showQrOverlay" (click)="showQrOverlay = false">
+    <div class="qr-box" (click)="$event.stopPropagation()">
+      <p class="qr-label">Accès galerie</p>
+      <img [src]="tunnelQrCode" class="qr-img" alt="QR code" />
+      <p class="qr-url">{{ tunnelUrl }}</p>
+      <button class="qr-close" (click)="showQrOverlay = false">Fermer</button>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" *ngIf="lightboxPhoto" (click)="closeLightbox()">
+    <button class="lightbox-close" (click)="closeLightbox()">✕</button>
+    <img [src]="getUrl(lightboxPhoto)" class="lightbox-img" (click)="$event.stopPropagation()" />
+    <div class="lightbox-actions" (click)="$event.stopPropagation()">
+      <a [href]="getDownloadUrl(lightboxPhoto.id)" download class="lightbox-btn">↓ Télécharger</a>
+      <span class="lightbox-date">{{ formatDate(lightboxPhoto.created_at) }}</span>
+    </div>
+  </div>
+</div>

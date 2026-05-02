@@ -1,0 +1,15 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  only:
+    - main
+  script:
+    - cd /home/benji/photobooth
+    - git pull origin master
+    - cd frontend
+    - npm run build -- --configuration production
+    - sudo systemctl reload nginx
+  tags:
+    - photobooth-pi
