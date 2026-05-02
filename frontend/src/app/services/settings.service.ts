@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ConfigService } from '../shared/config.service';
+import { ConfigService } from './config.service';
 import { Cell } from '../models/cell.model';
 import { StripLayout } from '../models/strip-layout.model';
 import { AppSettings } from '../models/app-settings.model';

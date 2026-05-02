@@ -1,4 +1,4 @@
-/* src/styles.css */
+/* src/styles.scss */
 @import 'material-icons/iconfont/material-icons.css';
 
 /* Reset */
@@ -92,4 +92,57 @@ app-settings {
 .icon-btn.logout:hover {
   border-color: #ff6060;
   color: #ff6060;
+}
+
+.fab {
+  position: fixed;
+  bottom: 30px;
+  right: 60px;
+  width: 5em;
+  height: 5em;
+  border-radius: 50%;
+  color: #8090ff;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  z-index: 50;
+}
+
+.fab.save,
+.fab.archives {
+  bottom: 30px;
+  right: 60px;
+  width: 5em;
+  height: 5em;
+  border: 2px solid #8090ff;
+
+  mat-icon {
+    font-size: 35px;
+    width: 35px;
+    height: 35px;
+  }
+}
+
+.fab.camera {
+  bottom: 60px;
+  right: 60px;
+  width: 7em;
+  height: 7em;
+  border: 2px solid #8090ff;
+
+  mat-icon {
+    font-size: 60px;
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .fab.save,
+  .fab.archives {
+    right: 30px;
+  }
 }

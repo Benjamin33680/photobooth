@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { SessionStorageService } from './session-storage.service';
-import { ConfigService } from '../shared/config.service';
+import { ConfigService } from './config.service';
 import { AuthUser } from '../models/auth-user.model';
 
 export { AuthUser };
@@ -14,15 +14,12 @@ export class AuthService {
   private _user = new BehaviorSubject<AuthUser | null>(null);
   user$ = this._user.asObservable();
 
-
-
   constructor(
     private http: HttpClient,
     private router: Router,
     private session: SessionStorageService,
     private config: ConfigService
   ) {
-    // Restaure la session
     const stored = this.session.get<AuthUser>(this.SESSION_KEY);
     if (stored) this._user.next(stored);
   }

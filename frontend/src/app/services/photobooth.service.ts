@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { ConfigService } from '../shared/config.service';
+import { ConfigService } from './config.service';
 import { BoothState } from '../models/booth-state.model';
 import { BoothMessage } from '../models/booth-message.model';
 
@@ -11,7 +10,6 @@ export { BoothState, BoothMessage };
 export class PhotoboothService implements OnDestroy {
   private ws: WebSocket | null = null;
 
-  // Observable streams
   readonly state$ = new BehaviorSubject<BoothState>('idle');
   readonly previewFrame$ = new BehaviorSubject<string | null>(null);
   readonly countdownValue$ = new BehaviorSubject<number>(0);
@@ -22,6 +20,7 @@ export class PhotoboothService implements OnDestroy {
   readonly captureFlash$ = new Subject<void>();
 
   constructor(private config: ConfigService) { }
+
   connect(): void {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
@@ -32,7 +31,6 @@ export class PhotoboothService implements OnDestroy {
     this.ws.onmessage = (event) => this._handleMessage(JSON.parse(event.data));
     this.ws.onerror = () => this.error$.next('WebSocket connection error');
     this.ws.onclose = () => {
-      // Auto-reconnect after 3s
       setTimeout(() => this.connect(), 3000);
     };
   }
@@ -56,22 +54,16 @@ export class PhotoboothService implements OnDestroy {
     }
   }
 
-  // ---------------------------------------------------------------- //
-
   private _handleMessage(msg: BoothMessage): void {
     switch (msg.type) {
       case 'frame':
         this.previewFrame$.next(`data:image/jpeg;base64,${msg.data}`);
-        if (this.state$.value === 'idle') {
-          // keep state idle, just update preview
-        }
         break;
 
       case 'countdown':
         this.state$.next('countdown');
         this.countdownValue$.next(msg.value ?? 0);
         this.currentPhotoIndex$.next(msg.photo_index ?? 0);
-        // Also update preview frame if provided
         break;
 
       case 'capture':

@@ -5,11 +5,11 @@ import {
   ChangeDetectorRef,
   inject,
 } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
-import { GalleryService } from './gallery.service';
+import { AuthService } from '../services/auth.service';
+import { GalleryService } from '../services/gallery.service';
 import { PhotoMeta } from '../models/photo-meta.model';
 import { StorageStats } from '../models/storage-stats.model';
-import { ConfigService } from '../shared/config.service';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-gallery',

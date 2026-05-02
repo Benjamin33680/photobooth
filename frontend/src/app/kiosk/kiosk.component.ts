@@ -7,11 +7,11 @@ import {
   inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { PhotoboothService } from './photobooth.service';
+import { PhotoboothService } from '../services/photobooth.service';
 import { BoothState } from '../models/booth-state.model';
 import QRCode from 'qrcode';
-import { SettingsService } from '../settings/settings.service';
-import { ConfigService } from '../shared/config.service';
+import { SettingsService } from '../services/settings.service';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-kiosk',

@@ -1,17 +1,14 @@
 <div class="settings-root">
 
   <!-- Header -->
-  <app-header
-    title="RÉGLAGES"
-    [showRemote]="false"
-    [showSettings]="false"
-    backLink="/gallery"
-  >
-    <button class="icon-btn save" *ngIf="hasUnsavedChanges()" (click)="save()"><mat-icon>save</mat-icon></button>
-  </app-header>
+  <app-header title="RÉGLAGES" [showRemote]="false" [showSettings]="false" backLink="/gallery"></app-header>
+
+  <button (click)="save()" class="fab save" *ngIf="hasUnsavedChanges()" matTooltip="Sauvegarder"
+    matTooltipPosition="left">
+    <mat-icon>save</mat-icon>
+  </button>
 
   <div class="content" *ngIf="settings">
-
     <!-- Section Affichage -->
     <section class="section">
       <h2 class="section-title">Affichage</h2>
@@ -38,12 +35,7 @@
           </div>
           <img *ngIf="logo !== 'default'" [src]="getLogoUrl(logo)" [alt]="logo" />
           <p class="logo-name">{{ logo === 'default' ? 'Défaut' : logo }}</p>
-          <button
-            *ngIf="logo !== 'default'"
-            class="delete-media-btn"
-            (click)="deleteLogo(logo)"
-            matTooltip="Supprimer"
-          >
+          <button *ngIf="logo !== 'default'" class="delete-media-btn" (click)="deleteLogo(logo)" matTooltip="Supprimer">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
@@ -66,25 +58,15 @@
         <div class="bg-image">
           <label>Image de fond</label>
           <div class="bg-previews">
-            <div
-              class="bg-item"
-              [class.selected]="settings.strip_background_image === null"
-              (click)="settings.strip_background_image = null"
-            >
+            <div class="bg-item" [class.selected]="settings.strip_background_image === null"
+              (click)="settings.strip_background_image = null">
               <div class="bg-none">Aucune</div>
             </div>
-            <div
-              *ngFor="let bg of backgrounds"
-              class="bg-item"
+            <div *ngFor="let bg of backgrounds" class="bg-item"
               [class.selected]="settings.strip_background_image === bg.filename"
-              (click)="settings.strip_background_image = bg.filename"
-            >
+              (click)="settings.strip_background_image = bg.filename">
               <img [src]="getBgUrl(bg.filename)" [alt]="bg.filename" />
-              <button
-                class="delete-media-btn"
-                (click)="deleteBackground($event, bg.filename)"
-                matTooltip="Supprimer"
-              >
+              <button class="delete-media-btn" (click)="deleteBackground($event, bg.filename)" matTooltip="Supprimer">
                 <mat-icon>delete</mat-icon>
               </button>
             </div>
@@ -100,19 +82,11 @@
     <!-- Section Disposition -->
     <section class="section">
       <h2 class="section-title">Disposition du strip</h2>
-      <app-layout-editor
-        *ngIf="settings"
-        [layout]="settings.strip_layout"
-        [logos]="logos"
-        (layoutChange)="onLayoutChange($event)"
-      ></app-layout-editor>
-      <app-strip-preview
-        *ngIf="settings"
-        [layout]="settings.strip_layout"
-        [bgColor]="settings.strip_background"
+      <app-layout-editor *ngIf="settings" [layout]="settings.strip_layout" [logos]="logos"
+        (layoutChange)="onLayoutChange($event)"></app-layout-editor>
+      <app-strip-preview *ngIf="settings" [layout]="settings.strip_layout" [bgColor]="settings.strip_background"
         [bgImageUrl]="settings.strip_background_image ? getBgUrl(settings.strip_background_image) : null"
-        [logoBaseUrl]="config.apiUrl"
-      ></app-strip-preview>
+        [logoBaseUrl]="config.apiUrl"></app-strip-preview>
     </section>
 
     <!-- Section Stockage -->
@@ -150,20 +124,12 @@
   </div>
 
   <!-- Popup reset/shutdown -->
-  <app-confirm-dialog
-    [visible]="confirmType !== null"
-    [title]="getConfirmTitle()"
-    [message]="getConfirmMessage()"
-    [actions]="getConfirmActions()"
-  ></app-confirm-dialog>
+  <app-confirm-dialog [visible]="confirmType !== null" [title]="getConfirmTitle()" [message]="getConfirmMessage()"
+    [actions]="getConfirmActions()"></app-confirm-dialog>
 
   <!-- Popup unsaved -->
-  <app-confirm-dialog
-    [visible]="showUnsavedConfirm"
-    title="Modifications non sauvegardées"
-    message="Voulez-vous sauvegarder avant de quitter ?"
-    [actions]="unsavedActions"
-  ></app-confirm-dialog>
+  <app-confirm-dialog [visible]="showUnsavedConfirm" title="Modifications non sauvegardées"
+    message="Voulez-vous sauvegarder avant de quitter ?" [actions]="unsavedActions"></app-confirm-dialog>
 
   <!-- Toast -->
   <div class="toast" *ngIf="toastMsg">{{ toastMsg }}</div>

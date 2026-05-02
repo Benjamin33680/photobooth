@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { SettingsService } from './settings.service';
-import { AuthService } from '../auth/auth.service';
+import { SettingsService } from '../services/settings.service';
+import { AuthService } from '../services/auth.service';
 import { AppSettings } from '../models/app-settings.model';
 import { StripLayout } from '../models/strip-layout.model';
 import { ConfirmAction } from '../models/confirm-action.model';
-import { ConfigService } from '../shared/config.service';
+import { ConfigService } from '../services/config.service';
 
 @Component({
   selector: 'app-settings',

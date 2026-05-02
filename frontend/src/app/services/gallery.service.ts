@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ConfigService } from '../shared/config.service';
+import { ConfigService } from './config.service';
 import { PhotoMeta } from '../models/photo-meta.model';
 import { StorageStats } from '../models/storage-stats.model';
 import { GalleryResponse } from '../models/gallery-response.model';
