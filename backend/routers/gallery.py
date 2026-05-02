@@ -111,13 +111,32 @@ async def delete_photo(photo_id: str, current_user: dict = Depends(require_admin
     raise HTTPException(status_code=404, detail="Photo not found")
 
 
-@router.get("/stats/summary")
-async def gallery_stats():
-    """Quick stats for dashboard display."""
-    photos = _get_all_strips()
-    total_size = sum(p.size_bytes for p in photos)
+@router.get("/storage/stats")
+async def storage_stats():
+    """Retourne les stats de stockage du dossier photos."""
+    import shutil
+    photos_dir = settings.PHOTOS_DIR
+    
+    # Taille totale des photos
+    total_size = 0
+    total_photos = 0
+    if os.path.exists(photos_dir):
+        for filename in os.listdir(photos_dir):
+            if filename.lower().endswith((".jpg", ".jpeg", ".png")):
+                total_size += os.path.getsize(os.path.join(photos_dir, filename))
+                total_photos += 1
+
+    # Quota alloué depuis les settings
+    from services.settings_service import SettingsService
+    app_settings = SettingsService().get()
+    quota_bytes = app_settings.get("storage_quota_mb", 10240) * 1024 * 1024  # défaut 10GB
+
     return {
-        "total_photos": len(photos),
-        "total_size_mb": round(total_size / 1_048_576, 2),
-        "latest": photos[0].created_at if photos else None,
+        "total_photos": total_photos,
+        "used_bytes": total_size,
+        "used_mb": round(total_size / 1_048_576, 2),
+        "quota_bytes": quota_bytes,
+        "quota_mb": round(quota_bytes / 1_048_576, 2),
+        "quota_gb": round(quota_bytes / 1_073_741_824, 2),
+        "percent": round((total_size / quota_bytes) * 100, 1) if quota_bytes > 0 else 0,
     }

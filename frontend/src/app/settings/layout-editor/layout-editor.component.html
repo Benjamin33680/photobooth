@@ -1,0 +1,82 @@
+<div class="editor-root">
+
+  <!-- Choix du format -->
+  <div class="format-selector">
+    <p class="section-label">FORMAT</p>
+    <div class="format-options">
+      <div
+        *ngFor="let f of formats"
+        class="format-option"
+        [class.selected]="layout.cols === f.cols"
+        (click)="setFormat(f.cols)"
+      >
+        <div class="format-grid" [style.grid-template-columns]="'repeat(' + f.cols + ', 1fr)'">
+          <div *ngFor="let c of getRange(f.cols * f.cols)" class="format-cell"></div>
+        </div>
+        <span>{{ f.label }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Éditeur de cellules -->
+  <div class="editor-body">
+    <div class="grid-section">
+      <p class="section-label">DISPOSITION</p>
+      <div
+        class="layout-grid"
+        [style.grid-template-columns]="'repeat(' + layout.cols + ', 1fr)'"
+      >
+        <div
+          *ngFor="let cell of layout.cells; let i = index"
+          class="layout-cell"
+          [class.logo-cell]="cell.type === 'logo'"
+          [class.photo-cell]="cell.type === 'photo'"
+          [class.empty-cell]="cell.type === 'empty'"
+          [class.selected]="selectedIndex === i"
+          draggable="true"
+          (dragstart)="onDragStart(i)"
+          (dragover)="$event.preventDefault()"
+          (drop)="onDrop(i)"
+          (click)="selectCell(i)"
+        >
+          <span *ngIf="cell.type === 'logo'">✦</span>
+          <span *ngIf="cell.type === 'photo'">📷 P{{ (cell.photo_index ?? 0) + 1 }}</span>
+          <span *ngIf="cell.type === 'empty'">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel cellule sélectionnée -->
+    <div class="cell-panel" *ngIf="selectedCell">
+      <p class="section-label">CELLULE {{ (selectedIndex ?? 0) + 1 }}</p>
+
+      <div class="panel-group">
+        <label>Type</label>
+        <div class="type-options">
+          <button
+            *ngFor="let t of typeOptions"
+            class="type-btn"
+            [class.active]="selectedCell.type === t"
+            (click)="selectedCell.type = asType(t); onTypeChange()"
+          >{{ t }}</button>
+        </div>
+      </div>
+
+      <div class="panel-group" *ngIf="selectedCell.type === 'logo'">
+        <label>Logo</label>
+        <div class="type-options logo-list">
+          <button
+            *ngFor="let logo of logos"
+            class="type-btn"
+            [class.active]="selectedCell.logo === logo"
+            (click)="selectedCell.logo = logo; emit()"
+          >{{ logo === 'default' ? 'Défaut' : logo }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Erreur -->
+  <div class="error-msg" *ngIf="errorMsg">⚠ {{ errorMsg }}</div>
+
+</div>

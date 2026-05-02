@@ -84,7 +84,7 @@ photobooth/
 │   │   │       ├── gallery.component.ts     # Photo grid + lightbox
 │   │   │       └── gallery.service.ts       # HTTP REST calls
 │   │   ├── environments/
-│   │   ├── styles.css
+│   │   ├── styles.scss
 │   │   └── main.ts
 │   ├── proxy.conf.json          # Dev proxy → FastAPI
 │   ├── nginx.conf               # Prod reverse proxy

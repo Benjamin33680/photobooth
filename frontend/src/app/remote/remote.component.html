@@ -1,0 +1,60 @@
+<div class="remote-root">
+
+  <app-header
+    title="REMOTE"
+    [showRemote]="false"
+    [showSettings]="true"
+    backLink="/gallery"
+  ></app-header>
+
+  <!-- IDLE : bouton déclenchement -->
+  <div class="idle-view" *ngIf="state === 'idle'">
+    <button class="start-btn" (click)="startSession()">
+      <div class="btn-inner">
+        <span class="btn-label">START</span>
+      </div>
+    </button>
+  </div>
+
+  <!-- COUNTDOWN -->
+  <div class="sequence-view" *ngIf="state === 'countdown' || state === 'capture'">
+    <div class="photo-dots">
+      <span
+        *ngFor="let i of getPhotoRange()"
+        class="dot"
+        [class.active]="i < currentPhotoIndex"
+        [class.current]="i === currentPhotoIndex"
+      ></span>
+    </div>
+    <p class="photo-label">Photo {{ currentPhotoIndex + 1 }} / {{ photosTotal }}</p>
+    <div class="countdown-number" *ngIf="state === 'countdown'">
+      {{ countdownValue }}
+    </div>
+    <div class="capture-flash" *ngIf="state === 'capture'">📸</div>
+  </div>
+
+  <!-- PROCESSING -->
+  <div class="processing-view" *ngIf="state === 'processing'">
+    <div class="spinner"></div>
+    <p>Assemblage en cours...</p>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-view" *ngIf="state === 'result'">
+    <img *ngIf="resultStrip" [src]="resultStrip" class="result-img" alt="Strip" />
+    <div class="result-actions">
+      <button
+        *ngIf="resultUrl"
+        (click)="downloadPhoto()"
+        class="download-btn"
+      >↓ Télécharger</button>
+      <button class="restart-btn" (click)="restart()">
+        ↺ Nouvelle série
+      </button>
+    </div>
+  </div>
+
+  <!-- ERROR -->
+  <div class="error-toast" *ngIf="errorMessage">⚠ {{ errorMessage }}</div>
+
+</div>

@@ -1,0 +1,31 @@
+<header class="header">
+  <h1 class="title">{{ title }}</h1>
+  <div class="header-right">
+
+    <ng-content></ng-content>
+
+    <a routerLink="/remote" class="icon-btn camera" *ngIf="!isLocalhost() && remoteEnabled && showRemote">
+      <mat-icon>camera_alt</mat-icon>
+    </a>
+
+    <a routerLink="/settings" class="icon-btn" *ngIf="isAdmin() && showSettings">
+      <mat-icon>settings</mat-icon>
+    </a>
+
+    <button class="icon-btn" *ngIf="showRefresh && !isLocalhost()" (click)="onRefresh()">
+      <mat-icon>refresh</mat-icon>
+    </button>
+
+    <a [routerLink]="backLink" class="icon-btn" *ngIf="backLink">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+
+    <button class="icon-btn logout" *ngIf="!isLocalhost()" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+    </button>
+
+  </div>
+</header>
+<a routerLink="/" class="fab camera" *ngIf="isLocalhost()" matTooltip="Retour au photobooth" matTooltipPosition="left">
+  <mat-icon>camera_alt</mat-icon>
+</a>

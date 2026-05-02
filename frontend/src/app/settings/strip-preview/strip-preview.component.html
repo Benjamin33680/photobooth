@@ -1,0 +1,40 @@
+<div class="preview-root">
+  <p class="preview-label">APERÇU DU STRIP</p>
+  <div
+    class="preview-strip"
+    [style.background-color]="bgColor"
+    [style.background-image]="bgImageUrl ? 'url(' + bgImageUrl + ')' : 'none'"
+    [style.grid-template-columns]="gridCols"
+    [style.grid-template-rows]="gridRows"
+  >
+    <div
+      *ngFor="let cell of layout.cells"
+      class="preview-cell"
+      [class.logo-cell]="cell.type === 'logo'"
+      [class.photo-cell]="cell.type === 'photo'"
+      [class.empty-cell]="cell.type === 'empty'"
+      [style.grid-column]="(cell.col + 1) + ' / span ' + cell.col_span"
+      [style.grid-row]="(cell.row + 1) + ' / span ' + cell.row_span"
+    >
+      <!-- Logo -->
+      <ng-container *ngIf="cell.type === 'logo'">
+        <img
+          *ngIf="cell.logo && cell.logo !== 'default'"
+          [src]="getLogoUrl(cell.logo)"
+          class="logo-img"
+          alt="logo"
+        />
+        <ng-container *ngIf="!cell.logo || cell.logo === 'default'">
+          <span class="cell-icon">✦</span>
+          <span class="cell-label">PHOTO<br>BOOTH</span>
+        </ng-container>
+      </ng-container>
+
+      <!-- Photo -->
+      <ng-container *ngIf="cell.type === 'photo'">
+        <span class="cell-icon">📷</span>
+        <span class="cell-label">P{{ (cell.photo_index ?? 0) + 1 }}</span>
+      </ng-container>
+    </div>
+  </div>
+</div>

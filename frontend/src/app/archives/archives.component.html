@@ -1,0 +1,65 @@
+<div class="archives-root">
+
+  <!-- Header -->
+  <app-header title="ARCHIVES" [showSettings]="false" backLink="/settings">
+  </app-header>
+
+  <button class="fab archives" (click)="showNameInput = true" matTooltip="Archiver les photos">
+    <mat-icon>archive</mat-icon>
+  </button>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Empty -->
+  <div *ngIf="!loading && archives.length === 0" class="empty-state">
+    <span class="empty-icon">📦</span>
+    <p>Aucune archive</p>
+  </div>
+
+  <!-- Liste -->
+  <div class="archives-list" *ngIf="!loading && archives.length > 0">
+    <div class="archive-item" *ngFor="let archive of archives">
+      <div class="archive-info">
+        <p class="archive-name">{{ archive.name }}</p>
+        <p class="archive-meta">
+          {{ formatDate(archive.created_at) }}
+          <span class="sep">·</span>
+          {{ archive.size_mb }} MB
+        </p>
+      </div>
+      <div class="archive-actions">
+        <button class="action-btn download" (click)="download(archive)" [disabled]="downloading === archive.filename">
+          {{ downloading === archive.filename ? '...' : '↓' }}
+        </button>
+        <button class="action-btn danger" (click)="confirmDelete(archive)">✕</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup nom de l'archive -->
+  <div class="confirm-overlay" *ngIf="showNameInput">
+    <div class="confirm-box">
+      <p class="confirm-msg">Nom de l'archive</p>
+      <p class="confirm-sub">Ce nom sera utilisé pour identifier l'événement</p>
+      <input class="archive-name-input" type="text" [(ngModel)]="archiveName" placeholder="Ex: Mariage_Julie_2026"
+        (keyup.enter)="archiveName.trim() && showConfirmArchive()" />
+      <div class="confirm-actions">
+        <button class="confirm-btn cancel" (click)="showNameInput = false; archiveName = ''">Annuler</button>
+        <button class="confirm-btn primary" (click)="showConfirmArchive()"
+          [disabled]="!archiveName.trim()">Continuer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm dialog -->
+  <app-confirm-dialog [visible]="confirmVisible" [title]="confirmTitle" [message]="confirmMessage"
+    [actions]="confirmActions"></app-confirm-dialog>
+
+  <!-- Toast -->
+  <div class="toast" *ngIf="toastMsg">{{ toastMsg }}</div>
+
+</div>

@@ -1,0 +1,86 @@
+.confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 5, 16, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.confirm-box {
+  background: #0d0d1a;
+  border: 1px solid rgba(128, 144, 255, 0.2);
+  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+}
+
+.confirm-msg {
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: #e0e6ff;
+  margin: 0;
+  font-family: 'Courier New', monospace;
+}
+
+.confirm-sub {
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: rgba(128, 144, 255, 0.5);
+  margin: 0;
+  line-height: 1.6;
+  font-family: 'Courier New', monospace;
+}
+
+.confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.confirm-btn {
+  padding: 12px 2px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+  min-width: 100px;
+  background: none;
+
+  &.cancel {
+    border: 1px solid rgba(255, 200, 80, 0.4);
+    color: #ffc850;
+    &:hover { background: rgba(255, 200, 80, 0.08); }
+  }
+
+  &.danger {
+    border: 1px solid rgba(255, 96, 96, 0.4);
+    color: #ff6060;
+    background: rgba(255, 96, 96, 0.1);
+    &:hover { background: rgba(255, 96, 96, 0.2); }
+  }
+
+  &.warning {
+    border: 1px solid rgba(255, 96, 96, 0.4);
+    color: #ff6060;
+    background: rgba(255, 96, 96, 0.1);
+    &:hover { background: rgba(255, 96, 96, 0.2); }
+  }
+
+  &.primary {
+    border: 1px solid rgba(80, 200, 120, 0.4);
+    color: #50c878;
+    background: rgba(80, 200, 120, 0.1);
+    &:hover { background: rgba(80, 200, 120, 0.2); }
+  }
+}

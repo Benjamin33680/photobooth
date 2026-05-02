@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import os
 
-from routers import camera, gallery, auth, settings as settings_router
+from routers import camera, gallery, auth, settings as settings_router, archives
 
 from dependencies import camera_service
 
@@ -37,11 +37,13 @@ app.add_middleware(
 app.mount("/photos", StaticFiles(directory="storage/photos"), name="photos")
 app.mount("/logos", StaticFiles(directory="storage/logos"), name="logos")
 app.mount("/backgrounds", StaticFiles(directory="storage/backgrounds"), name="backgrounds")
+app.mount("/archive-files", StaticFiles(directory="storage/archives"), name="archives")
 
 app.include_router(camera.router, prefix="/api/camera", tags=["camera"])
 app.include_router(gallery.router, prefix="/api/gallery", tags=["gallery"])
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(settings_router.router, prefix="/api/settings", tags=["settings"])
+app.include_router(archives.router, prefix="/api/archives", tags=["archives"])
 
 
 @app.get("/health")
