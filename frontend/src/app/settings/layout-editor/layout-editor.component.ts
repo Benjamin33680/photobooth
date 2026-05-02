@@ -5,7 +5,8 @@ import {
   EventEmitter,
   OnChanges,
 } from '@angular/core';
-import { Cell, StripLayout } from '../settings.service';
+import { Cell } from '../../models/cell.model';
+import { StripLayout } from '../../models/strip-layout.model';
 
 @Component({
   selector: 'app-layout-editor',

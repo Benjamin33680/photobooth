@@ -2,26 +2,10 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { ConfigService } from '../shared/config.service';
+import { BoothState } from '../models/booth-state.model';
+import { BoothMessage } from '../models/booth-message.model';
 
-export type BoothState =
-  | 'idle'
-  | 'countdown'
-  | 'capture'
-  | 'processing'
-  | 'result';
-
-export interface BoothMessage {
-  type: string;
-  data?: string;        // base64 frame
-  value?: number;       // countdown tick
-  photo_index?: number; // which photo (0-2)
-  index?: number;       // capture index
-  strip_b64?: string;
-  url?: string;
-  id?: string;
-  created_at?: string;
-  message?: string;     // error
-}
+export { BoothState, BoothMessage };
 
 @Injectable({ providedIn: 'root' })
 export class PhotoboothService implements OnDestroy {

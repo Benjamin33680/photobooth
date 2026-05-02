@@ -2,13 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../shared/config.service';
+import { Archive } from '../models/archive.model';
 
-export interface Archive {
-  filename: string;
-  name: string;
-  size_mb: number;
-  created_at: string;
-}
+export { Archive };
 
 @Injectable({ providedIn: 'root' })
 export class ArchivesService {

@@ -4,12 +4,9 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { SessionStorageService } from './session-storage.service';
 import { ConfigService } from '../shared/config.service';
+import { AuthUser } from '../models/auth-user.model';
 
-export interface AuthUser {
-  username: string;
-  role: 'admin' | 'user';
-  token: string;
-}
+export { AuthUser };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

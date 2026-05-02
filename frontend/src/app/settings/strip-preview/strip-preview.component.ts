@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { StripLayout } from '../settings.service';
+import { StripLayout } from '../../models/strip-layout.model';
 
 @Component({
   selector: 'app-strip-preview',

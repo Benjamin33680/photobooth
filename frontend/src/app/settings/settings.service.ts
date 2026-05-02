@@ -2,33 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../shared/config.service';
+import { Cell } from '../models/cell.model';
+import { StripLayout } from '../models/strip-layout.model';
+import { AppSettings } from '../models/app-settings.model';
 
-export interface Cell {
-  id: number;
-  type: 'logo' | 'photo' | 'empty';
-  logo?: string;
-  photo_index?: number;
-  col: number;
-  row: number;
-  col_span: number;
-  row_span: number;
-}
-
-export interface StripLayout {
-  cols: number;
-  rows: number;
-  cells: Cell[];
-}
-
-export interface AppSettings {
-  show_qrcode: boolean;
-  remote_enabled: boolean;
-  selected_logo: string;
-  strip_background: string;
-  strip_background_image: string | null;
-  strip_layout: StripLayout;
-  storage_quota_mb: number;
-}
+export { Cell, StripLayout, AppSettings };
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {

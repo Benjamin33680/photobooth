@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SettingsService, AppSettings, StripLayout } from './settings.service';
+import { SettingsService } from './settings.service';
 import { AuthService } from '../auth/auth.service';
-import { ConfirmAction } from '../shared/confirm-dialog/confirm-dialog.component';
+import { AppSettings } from '../models/app-settings.model';
+import { StripLayout } from '../models/strip-layout.model';
+import { ConfirmAction } from '../models/confirm-action.model';
 import { ConfigService } from '../shared/config.service';
 
 @Component({

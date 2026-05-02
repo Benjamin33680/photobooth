@@ -2,29 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ConfigService } from '../shared/config.service';
+import { PhotoMeta } from '../models/photo-meta.model';
+import { StorageStats } from '../models/storage-stats.model';
+import { GalleryResponse } from '../models/gallery-response.model';
 
-export interface PhotoMeta {
-  id: string;
-  filename: string;
-  url: string;
-  created_at: string;
-  size_bytes: number;
-}
-
-export interface StorageStats {
-  total_photos: number;
-  used_bytes: number;
-  used_mb: number;
-  quota_bytes: number;
-  quota_mb: number;
-  quota_gb: number;
-  percent: number;
-}
-
-export interface GalleryResponse {
-  total: number;
-  photos: PhotoMeta[];
-}
+export { PhotoMeta, StorageStats, GalleryResponse };
 
 @Injectable({ providedIn: 'root' })
 export class GalleryService {

@@ -7,7 +7,8 @@ import {
   inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { PhotoboothService, BoothState } from './photobooth.service';
+import { PhotoboothService } from './photobooth.service';
+import { BoothState } from '../models/booth-state.model';
 import QRCode from 'qrcode';
 import { SettingsService } from '../settings/settings.service';
 import { ConfigService } from '../shared/config.service';

@@ -1,10 +1,7 @@
 import { Component, Input } from '@angular/core';
+import { ConfirmAction } from '../../models/confirm-action.model';
 
-export interface ConfirmAction {
-  label: string;
-  type: 'cancel' | 'danger' | 'warning' | 'primary';
-  action: () => void;
-}
+export { ConfirmAction };
 
 @Component({
   selector: 'app-confirm-dialog',

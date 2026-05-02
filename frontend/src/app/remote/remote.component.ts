@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { PhotoboothService, BoothState } from '../kiosk/photobooth.service';
+import { PhotoboothService } from '../kiosk/photobooth.service';
+import { BoothState } from '../models/booth-state.model';
 import { AuthService } from '../auth/auth.service';
 import { SettingsService } from '../settings/settings.service';
 import { ConfigService } from '../shared/config.service';
