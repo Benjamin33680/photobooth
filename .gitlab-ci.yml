@@ -4,7 +4,7 @@ stages:
 deploy:
   stage: deploy
   only:
-    - master
+    - main
   script:
     - cd /home/benji/photobooth
     - git pull origin master
