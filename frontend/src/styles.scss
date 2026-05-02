@@ -102,7 +102,9 @@ app-settings {
   height: 5em;
   border-radius: 50%;
   color: #8090ff;
-  background: transparent;
+  background: rgba(8, 8, 24, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
