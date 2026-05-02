@@ -1,5 +1,6 @@
 import io
 import os
+import re
 import shutil
 import zipfile
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
@@ -127,6 +128,25 @@ async def export_all_photos(_=Depends(require_admin)):
         media_type="application/zip",
         headers={"Content-Disposition": "attachment; filename=photobooth_photos.zip"}
     )
+
+
+# ------------------------------------------------------------------ #
+#  Tunnel URL                                                          #
+# ------------------------------------------------------------------ #
+
+TUNNEL_LOG = "/home/benji/photobooth/tunnel.log"
+
+@router.get("/tunnel-url")
+async def get_tunnel_url():
+    try:
+        with open(TUNNEL_LOG) as f:
+            content = f.read()
+        matches = re.findall(r'https://[a-z0-9-]+\.trycloudflare\.com', content)
+        if matches:
+            return {"url": matches[-1]}
+    except Exception:
+        pass
+    return {"url": None}
 
 
 # ------------------------------------------------------------------ #

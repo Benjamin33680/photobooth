@@ -102,6 +102,22 @@
       </div>
     </section>
 
+    <!-- Section Accès public -->
+    <section class="section">
+      <h2 class="section-title">Accès public</h2>
+      <div class="tunnel-block" *ngIf="tunnelUrl; else noTunnel">
+        <img *ngIf="tunnelQrCode" [src]="tunnelQrCode" class="tunnel-qr" alt="QR code public" />
+        <div class="tunnel-info">
+          <p class="tunnel-label">URL Cloudflare</p>
+          <p class="tunnel-url">{{ tunnelUrl }}</p>
+          <button class="action-btn copy" (click)="copyTunnelUrl()">↗ Copier l'URL</button>
+        </div>
+      </div>
+      <ng-template #noTunnel>
+        <p class="tunnel-offline">Tunnel inactif</p>
+      </ng-template>
+    </section>
+
     <!-- Section Actions -->
     <section class="section">
       <h2 class="section-title">Actions</h2>

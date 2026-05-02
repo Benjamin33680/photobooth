@@ -80,6 +80,10 @@ export class SettingsService {
     }, 100);
   }
 
+  getTunnelUrl(): Observable<{ url: string | null }> {
+    return this.http.get<{ url: string | null }>(`${this.apiUrl}/tunnel-url`);
+  }
+
   shutdown(): Observable<any> {
     return this.http.post(`${this.apiUrl}/shutdown`, {});
   }

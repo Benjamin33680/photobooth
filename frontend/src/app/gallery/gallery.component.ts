@@ -5,8 +5,10 @@ import {
   ChangeDetectorRef,
   inject,
 } from '@angular/core';
+import QRCode from 'qrcode';
 import { AuthService } from '../services/auth.service';
 import { GalleryService } from '../services/gallery.service';
+import { SettingsService } from '../services/settings.service';
 import { PhotoMeta } from '../models/photo-meta.model';
 import { StorageStats } from '../models/storage-stats.model';
 import { ConfigService } from '../services/config.service';
@@ -24,10 +26,14 @@ export class GalleryComponent implements OnInit {
   hasMore = false;
   lightboxPhoto: PhotoMeta | null = null;
   remoteEnabled = false;
+  showQrOverlay = false;
+  tunnelQrCode: string | null = null;
+  tunnelUrl: string | null = null;
 
   private limit = 20;
   private offset = 0;
   private auth = inject(AuthService);
+  private settingsService = inject(SettingsService);
 
   constructor(
     private galleryService: GalleryService,
@@ -39,6 +45,20 @@ export class GalleryComponent implements OnInit {
     this.loadPhotos();
     this.loadStorageStats();
     this.checkRemoteEnabled();
+    this.loadTunnelQrCode();
+  }
+
+  loadTunnelQrCode(): void {
+    this.settingsService.getTunnelUrl().subscribe(async r => {
+      if (!r.url) return;
+      this.tunnelUrl = r.url;
+      this.tunnelQrCode = await QRCode.toDataURL(r.url, {
+        width: 220,
+        margin: 2,
+        color: { dark: '#e0e6ff', light: '#0d0d1a' },
+      });
+      this.cdr.markForCheck();
+    });
   }
 
   checkRemoteEnabled(): void {
@@ -124,5 +144,9 @@ export class GalleryComponent implements OnInit {
 
   isAdmin(): boolean {
     return this.auth.isAdmin();
+  }
+
+  isLocalhost(): boolean {
+    return this.auth.isLocalhost();
   }
 }
