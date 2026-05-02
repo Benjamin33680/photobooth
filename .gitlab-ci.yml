@@ -7,7 +7,7 @@ deploy:
     - main
   script:
     - cd /home/benji/photobooth
-    - git pull origin master
+    - git pull origin main
     - cd frontend
     - npm run build -- --configuration production
     - sudo systemctl reload nginx
