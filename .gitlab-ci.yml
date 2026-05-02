@@ -7,6 +7,8 @@ deploy:
     - main
   tags:
     - photobooth-pi
+  variables:
+    CI_DEBUG_TRACE: "true"
   script:
     - cd /home/benji/photobooth
     - git pull origin main
