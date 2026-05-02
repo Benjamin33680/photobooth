@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import QRCode from 'qrcode';
 import { SettingsService } from '../services/settings.service';
 import { AuthService } from '../services/auth.service';
 import { AppSettings } from '../models/app-settings.model';
@@ -19,6 +20,8 @@ export class SettingsComponent implements OnInit {
   toastMsg: string | null = null;
   isDirty = false;
   showUnsavedConfirm = false;
+  tunnelUrl: string | null = null;
+  tunnelQrCode: string | null = null;
 
   unsavedActions: ConfirmAction[] = [
     { label: 'Annuler',               type: 'cancel',  action: () => this.unsavedCancel() },
@@ -50,6 +53,35 @@ export class SettingsComponent implements OnInit {
     });
     this.settingsService.getLogos().subscribe(r => this.logos = r.logos);
     this.settingsService.getBackgrounds().subscribe(r => this.backgrounds = r.backgrounds);
+    this.settingsService.getTunnelUrl().subscribe(r => {
+      this.tunnelUrl = r.url;
+      if (r.url) this.generateTunnelQrCode(r.url);
+    });
+  }
+
+  async generateTunnelQrCode(url: string): Promise<void> {
+    this.tunnelQrCode = await QRCode.toDataURL(url, {
+      width: 160,
+      margin: 2,
+      color: { dark: '#e0e6ff', light: '#0d0d1a' },
+    });
+  }
+
+  copyTunnelUrl(): void {
+    if (!this.tunnelUrl) return;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(this.tunnelUrl).then(() => this.showToast('URL copiée ✓'));
+    } else {
+      const el = document.createElement('textarea');
+      el.value = this.tunnelUrl;
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      this.showToast('URL copiée ✓');
+    }
   }
 
   incrementQuota(): void {

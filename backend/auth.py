@@ -16,13 +16,13 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login", auto_error=Fals
 # Utilisateurs en dur (à remplacer par une DB en v2)
 USERS = {
     "admin": {
-        "username": "admin",
-        "hashed_password": pwd_context.hash("admin123"),
+        "username": "BR0029EL",
+        "hashed_password": pwd_context.hash("7329Benjamin@"),
         "role": "admin",
     },
     "user": {
         "username": "user",
-        "hashed_password": pwd_context.hash("user123"),
+        "hashed_password": pwd_context.hash("7369Mathilde@"),
         "role": "user",
     },
 }
@@ -33,7 +33,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 def authenticate_user(username: str, password: str) -> Optional[dict]:
-    user = USERS.get(username)
+    user = next((u for u in USERS.values() if u["username"] == username), None)
     if not user or not verify_password(password, user["hashed_password"]):
         return None
     return user
@@ -47,9 +47,9 @@ def create_access_token(data: dict) -> str:
 
 
 def is_localhost(request: Request) -> bool:
-    """Vérifie si la requête vient du Pi lui-même."""
-    client_host = request.client.host if request.client else ""
-    return client_host in ("127.0.0.1", "::1", "localhost")
+    """Vérifie si la requête vient du Pi lui-même via le header Host."""
+    host = request.headers.get("host", "").split(":")[0]
+    return host in ("127.0.0.1", "::1", "localhost")
 
 
 async def get_current_user(
@@ -57,28 +57,28 @@ async def get_current_user(
     token: Optional[str] = Depends(oauth2_scheme)
 ) -> dict:
     """
-    - Si la requête vient de localhost → user automatique
-    - Sinon → vérifie le JWT
+    - Si JWT valide → utilise le JWT (admin ou user)
+    - Sinon si localhost → user automatique (kiosk)
+    - Sinon → 401
     """
+    if token:
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            username = payload.get("sub")
+            role = payload.get("role")
+            if username:
+                return {"username": username, "role": role}
+        except JWTError:
+            pass
+
     if is_localhost(request):
         return {"username": "pi", "role": "user"}
 
-    if not token:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Non authentifié",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        role = payload.get("role")
-        if not username:
-            raise HTTPException(status_code=401, detail="Token invalide")
-        return {"username": username, "role": role}
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Token invalide")
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Non authentifié",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
 
 async def require_admin(current_user: dict = Depends(get_current_user)) -> dict:

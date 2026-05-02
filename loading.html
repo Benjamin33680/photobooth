@@ -50,8 +50,8 @@
   <script>
     // Essaie de se connecter au front toutes les 2s
     function tryConnect() {
-      fetch('http://localhost:4200')
-        .then(() => { window.location.href = 'http://localhost:4200'; })
+      fetch('http://localhost/health')
+        .then(() => { window.location.href = 'http://localhost'; })
         .catch(() => { setTimeout(tryConnect, 2000); });
     }
     setTimeout(tryConnect, 3000);
