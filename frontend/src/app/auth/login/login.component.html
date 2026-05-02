@@ -1,0 +1,27 @@
+<div class="login-root">
+  <div class="login-box">
+    <h1 class="title">✦ PHOTOBOOTH ✦</h1>
+    <p class="subtitle">Connexion requise</p>
+
+    <div class="form">
+      <input
+        class="input"
+        type="text"
+        placeholder="Identifiant"
+        [(ngModel)]="username"
+        (keyup.enter)="login()"
+      />
+      <input
+        class="input"
+        type="password"
+        placeholder="Mot de passe"
+        [(ngModel)]="password"
+        (keyup.enter)="login()"
+      />
+      <button class="btn" (click)="login()" [disabled]="loading">
+        {{ loading ? 'Connexion...' : 'Se connecter' }}
+      </button>
+      <p class="error" *ngIf="error">{{ error }}</p>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ArchivesService, Archive } from './archives.service';
 import { AuthService } from '../auth/auth.service';
-import { ConfirmAction } from '../shared/confirm-dialog.component';
+import { ConfirmAction } from '../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-archives',

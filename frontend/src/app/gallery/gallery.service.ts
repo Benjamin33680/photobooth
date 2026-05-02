@@ -47,7 +47,7 @@ export class GalleryService {
   }
 
   getDownloadUrl(id: string): string {
-    return `${this.apiUrl}/api/gallery/${id}/download`;
+    return `${this.config.apiUrl}/api/gallery/${id}/download`;
   }
 
   getPhotoUrl(photo: PhotoMeta): string {
