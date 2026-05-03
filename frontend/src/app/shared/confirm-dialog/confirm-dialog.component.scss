@@ -1,7 +1,9 @@
+@use 'colors' as *;
+
 .confirm-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(5, 5, 16, 0.9);
+  background: overlay(0.90);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,8 +11,8 @@
 }
 
 .confirm-box {
-  background: #0d0d1a;
-  border: 1px solid rgba(128, 144, 255, 0.2);
+  background: bg-surface();
+  border: 1px solid accent(0.2);
   padding: 48px;
   display: flex;
   flex-direction: column;
@@ -23,7 +25,7 @@
 .confirm-msg {
   font-size: 18px;
   letter-spacing: 3px;
-  color: #e0e6ff;
+  color: text-primary();
   margin: 0;
   font-family: 'Courier New', monospace;
 }
@@ -31,7 +33,7 @@
 .confirm-sub {
   font-size: 12px;
   letter-spacing: 2px;
-  color: rgba(128, 144, 255, 0.5);
+  color: text-tertiary();
   margin: 0;
   line-height: 1.6;
   font-family: 'Courier New', monospace;
@@ -58,29 +60,20 @@
   background: none;
 
   &.cancel {
-    border: 1px solid rgba(255, 200, 80, 0.4);
-    color: #ffc850;
+    border: 1px solid rgba($warning, 0.4);
+    color: $warning;
     &:hover { background: rgba(255, 200, 80, 0.08); }
   }
-
-  &.danger {
-    border: 1px solid rgba(255, 96, 96, 0.4);
-    color: #ff6060;
-    background: rgba(255, 96, 96, 0.1);
+  &.danger, &.warning {
+    border: 1px solid $danger-soft;
+    color: $danger;
+    background: $danger-bg;
     &:hover { background: rgba(255, 96, 96, 0.2); }
   }
-
-  &.warning {
-    border: 1px solid rgba(255, 96, 96, 0.4);
-    color: #ff6060;
-    background: rgba(255, 96, 96, 0.1);
-    &:hover { background: rgba(255, 96, 96, 0.2); }
-  }
-
   &.primary {
-    border: 1px solid rgba(80, 200, 120, 0.4);
-    color: #50c878;
-    background: rgba(80, 200, 120, 0.1);
+    border: 1px solid $success-soft;
+    color: $success;
+    background: $success-bg;
     &:hover { background: rgba(80, 200, 120, 0.2); }
   }
 }

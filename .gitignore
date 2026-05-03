@@ -8,6 +8,7 @@ frontend/dist/
 frontend/.angular/
 .DS_Store
 Thumbs.db
+tunnel.log
 .vscode/
 # Storage - ignore files but keep folder structure
 backend/storage/photos/*.jpg

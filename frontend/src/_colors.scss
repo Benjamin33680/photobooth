@@ -1,0 +1,67 @@
+// ============================================================
+//  PHOTOBOOTH — Système de thèmes
+//  Les couleurs thémables sont des CSS custom properties.
+//  Usage dans les composants : color: accent(0.5);
+//  → compile vers : color: rgb(var(--ph-accent) / 0.5);
+// ============================================================
+
+// ─── Fonctions helper ────────────────────────────────────────
+
+@function accent($alpha: 1) {
+  @if $alpha == 1 { @return unquote("rgb(var(--ph-accent))"); }
+  @return unquote("rgb(var(--ph-accent) / #{$alpha})");
+}
+
+// Fond sombre semi-transparent (modales, overlays)
+@function overlay($alpha) {
+  @return unquote("rgb(var(--ph-bg-deep) / #{$alpha})");
+}
+
+@function bg-deep($alpha: 1) {
+  @if $alpha == 1 { @return unquote("rgb(var(--ph-bg-deep))"); }
+  @return unquote("rgb(var(--ph-bg-deep) / #{$alpha})");
+}
+
+@function bg-base($alpha: 1) {
+  @if $alpha == 1 { @return unquote("rgb(var(--ph-bg-base))"); }
+  @return unquote("rgb(var(--ph-bg-base) / #{$alpha})");
+}
+
+@function bg-surface($alpha: 1) {
+  @if $alpha == 1 { @return unquote("rgb(var(--ph-bg-surface))"); }
+  @return unquote("rgb(var(--ph-bg-surface) / #{$alpha})");
+}
+
+@function bg-header()  { @return unquote("rgb(var(--ph-bg-base) / 0.95)"); }
+@function bg-banner()  { @return unquote("rgb(var(--ph-bg-base) / 0.80)"); }
+
+@function glow-inner($alpha: 1) {
+  @if $alpha == 1 { @return unquote("rgb(var(--ph-glow-inner))"); }
+  @return unquote("rgb(var(--ph-glow-inner) / #{$alpha})");
+}
+@function glow-outer($alpha: 1) {
+  @if $alpha == 1 { @return unquote("rgb(var(--ph-glow-outer))"); }
+  @return unquote("rgb(var(--ph-glow-outer) / #{$alpha})");
+}
+
+// Texte — 5 niveaux de lisibilité
+@function text-bright()    { @return unquote("rgb(var(--ph-text-bright))"); }
+@function text-primary()   { @return unquote("rgb(var(--ph-text-primary))"); }
+@function text-secondary() { @return unquote("rgb(var(--ph-text-secondary) / 0.85)"); }
+@function text-tertiary()  { @return unquote("rgb(var(--ph-text-tertiary) / 0.65)"); }
+@function text-muted()     { @return unquote("rgb(var(--ph-text-muted) / 0.45)"); }
+
+// ─── Couleurs statiques (identiques dans tous les thèmes) ─────
+
+$danger:       #ff6060;
+$danger-soft:  rgba(255, 96, 96, 0.30);
+$danger-bg:    rgba(255, 96, 96, 0.10);
+$danger-toast: rgba(200, 60, 60, 0.90);
+
+$warning:      #ffc850;
+$warning-soft: rgba(255, 200, 80, 0.30);
+$warning-fill: rgba(255, 200, 80, 0.70);
+
+$success:      #50c878;
+$success-soft: rgba(80, 200, 120, 0.40);
+$success-bg:   rgba(80, 200, 120, 0.10);

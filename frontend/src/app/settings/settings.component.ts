@@ -6,6 +6,7 @@ import { AppSettings } from '../models/app-settings.model';
 import { StripLayout } from '../models/strip-layout.model';
 import { ConfirmAction } from '../models/confirm-action.model';
 import { ConfigService } from '../services/config.service';
+import { ThemeService, Theme } from '../services/theme.service';
 
 @Component({
   selector: 'app-settings',
@@ -22,6 +23,7 @@ export class SettingsComponent implements OnInit {
   showUnsavedConfirm = false;
   tunnelUrl: string | null = null;
   tunnelQrCode: string | null = null;
+  currentTheme: Theme = 'indigo';
 
   unsavedActions: ConfirmAction[] = [
     { label: 'Annuler',               type: 'cancel',  action: () => this.unsavedCancel() },
@@ -44,9 +46,11 @@ export class SettingsComponent implements OnInit {
     private settingsService: SettingsService,
     private auth: AuthService,
     public config: ConfigService,
+    private themeService: ThemeService,
   ) { }
 
   ngOnInit(): void {
+    this.currentTheme = this.themeService.current();
     this.settingsService.getSettings().subscribe(s => {
       this.settings = s;
       this.initialSettings = JSON.stringify(s);
@@ -65,6 +69,11 @@ export class SettingsComponent implements OnInit {
       margin: 2,
       color: { dark: '#e0e6ff', light: '#0d0d1a' },
     });
+  }
+
+  setTheme(theme: Theme): void {
+    this.currentTheme = theme;
+    this.themeService.apply(theme);
   }
 
   copyTunnelUrl(): void {

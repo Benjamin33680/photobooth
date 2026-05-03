@@ -1,4 +1,4 @@
-<div class="gallery-root">
+<div class="gallery-root" [class.local]="isLocalhost()">
 
   <!-- Header -->
   <app-header title="GALERIE" [showRefresh]="true" [onRefreshFn]="refresh.bind(this)"

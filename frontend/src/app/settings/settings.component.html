@@ -9,6 +9,21 @@
   </button>
 
   <div class="content" *ngIf="settings">
+    <!-- Section Apparence -->
+    <section class="section">
+      <h2 class="section-title">Apparence</h2>
+      <div class="theme-picker">
+        <button class="theme-btn" [class.active]="currentTheme === 'indigo'" (click)="setTheme('indigo')">
+          <span class="theme-dot" style="background:#8090ff"></span>
+          Indigo
+        </button>
+        <button class="theme-btn" [class.active]="currentTheme === 'emerald'" (click)="setTheme('emerald')">
+          <span class="theme-dot" style="background:#00c896"></span>
+          Emeraude
+        </button>
+      </div>
+    </section>
+
     <!-- Section Affichage -->
     <section class="section">
       <h2 class="section-title">Affichage</h2>

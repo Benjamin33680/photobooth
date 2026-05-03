@@ -11,5 +11,7 @@ deploy:
     - cd /home/benji/photobooth
     - git pull origin main
     - cd frontend
-    - npm run build -- --configuration production
+    - npm run build -- --configuration production --output-path dist/frontend-new
+    - rm -rf dist/frontend
+    - mv dist/frontend-new dist/frontend
     - sudo systemctl reload nginx

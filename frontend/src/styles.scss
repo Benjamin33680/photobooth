@@ -1,5 +1,36 @@
 /* src/styles.scss */
+@use 'colors' as *;
 @import 'material-icons/iconfont/material-icons.css';
+
+// ─── Thème Indigo (défaut) ────────────────────────────────────
+:root {
+  --ph-accent: 128 144 255;
+  --ph-glow-inner: 64 80 204;
+  --ph-glow-outer: 96 112 238;
+  --ph-bg-deep: 5 5 16;
+  --ph-bg-base: 7 7 15;
+  --ph-bg-surface: 13 13 26;
+  --ph-text-bright: 240 242 255;
+  --ph-text-primary: 212 218 255;
+  --ph-text-secondary: 190 202 255;
+  --ph-text-tertiary: 172 185 255;
+  --ph-text-muted: 152 168 255;
+}
+
+// ─── Thème Emeraude ───────────────────────────────────────────
+body.theme-emerald {
+  --ph-accent: 0 200 150;
+  --ph-glow-inner: 0 143 107;
+  --ph-glow-outer: 0 168 126;
+  --ph-bg-deep: 3 16 10;
+  --ph-bg-base: 5 15 8;
+  --ph-bg-surface: 10 26 16;
+  --ph-text-bright: 240 255 248;
+  --ph-text-primary: 210 240 225;
+  --ph-text-secondary: 170 220 195;
+  --ph-text-tertiary: 150 205 180;
+  --ph-text-muted: 130 190 165;
+}
 
 /* Reset */
 *,
@@ -15,18 +46,16 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background: #07070f;
+  background: bg-base();
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 
-/* Kiosk: disable text selection everywhere */
 body {
   user-select: none;
   -webkit-user-select: none;
 }
 
-/* Gallery route allows scroll */
 app-gallery {
   display: block;
   overflow-y: auto;
@@ -39,21 +68,20 @@ app-settings {
   height: 100vh;
 }
 
-/* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #07070f;
+  background: bg-base();
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(128, 144, 255, 0.3);
+  background: accent(0.30);
   border-radius: 2px;
 }
 
-/* Icon buttons - global */
+/* Icon buttons */
 .icon-btn {
   display: flex;
   align-items: center;
@@ -61,39 +89,40 @@ app-settings {
   width: 36px;
   height: 36px;
   background: none;
-  border: 1px solid rgba(128, 144, 255, 0.2);
+  border: 1px solid accent(0.2);
   border-radius: 50%;
-  color: rgba(128, 144, 255, 0.6);
+  color: accent(0.6);
   cursor: pointer;
   text-decoration: none;
   transition: all 0.2s;
 }
 
 .icon-btn:hover {
-  border-color: #8090ff;
-  color: #8090ff;
+  border-color: accent();
+  color: accent();
 }
 
 .icon-btn.camera {
   border-color: rgba(255, 107, 107, 0.3);
   color: rgba(255, 107, 107, 0.6);
-}
 
-.icon-btn.camera:hover {
-  border-color: #ff6b6b;
-  color: #ff6b6b;
+  &:hover {
+    border-color: $danger;
+    color: $danger;
+  }
 }
 
 .icon-btn.logout {
-  border-color: rgba(255, 96, 96, 0.2);
-  color: rgba(255, 96, 96, 0.5);
+  border-color: rgba($danger, 0.2);
+  color: rgba($danger, 0.5);
+
+  &:hover {
+    border-color: $danger;
+    color: $danger;
+  }
 }
 
-.icon-btn.logout:hover {
-  border-color: #ff6060;
-  color: #ff6060;
-}
-
+/* FAB */
 .fab {
   position: fixed;
   bottom: 30px;
@@ -118,7 +147,7 @@ app-settings {
   right: 60px;
   width: 5em;
   height: 5em;
-  border: 2px solid #8090ff;
+  border: 2px solid accent();
 
   mat-icon {
     font-size: 35px;
@@ -132,7 +161,7 @@ app-settings {
   right: 60px;
   width: 7em;
   height: 7em;
-  border: 2px solid #8090ff;
+  border: 2px solid accent();
 
   mat-icon {
     font-size: 60px;
@@ -140,7 +169,6 @@ app-settings {
     height: 60px;
   }
 }
-
 
 @media (max-width: 600px) {
 
