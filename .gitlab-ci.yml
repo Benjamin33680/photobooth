@@ -15,3 +15,4 @@ deploy:
     - rm -rf dist/frontend
     - mv dist/frontend-new dist/frontend
     - sudo systemctl reload nginx
+    - sudo reboot

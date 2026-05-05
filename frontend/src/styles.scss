@@ -15,6 +15,9 @@
   --ph-text-secondary: 190 202 255;
   --ph-text-tertiary: 172 185 255;
   --ph-text-muted: 152 168 255;
+  --ph-photo-cell: 30 40 80;
+  --ph-qr-dark: #e0e6ff;
+  --ph-qr-light: #0d0d1a;
 }
 
 // ─── Thème Emeraude ───────────────────────────────────────────
@@ -30,6 +33,9 @@ body.theme-emerald {
   --ph-text-secondary: 170 220 195;
   --ph-text-tertiary: 150 205 180;
   --ph-text-muted: 130 190 165;
+  --ph-photo-cell: 20 60 40;
+  --ph-qr-dark: #d0f5e8;
+  --ph-qr-light: #030f08;
 }
 
 /* Reset */
@@ -130,8 +136,8 @@ app-settings {
   width: 5em;
   height: 5em;
   border-radius: 50%;
-  color: #8090ff;
-  background: rgba(8, 8, 24, 0.72);
+  color: accent();
+  background: overlay(0.72);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;

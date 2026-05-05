@@ -10,6 +10,7 @@
   width: 100%;
   aspect-ratio: 16 / 10;
   border: 1px solid accent(0.15);
+  background-color: bg-deep();
   background-size: cover;
   background-position: center;
 }
@@ -22,7 +23,7 @@
   gap: 4px;
   overflow: hidden;
   &.logo-cell  { background: accent(0.08); border: 1px solid accent(0.2); }
-  &.photo-cell { background: rgba(40, 50, 100, 0.4); border: 2px solid rgba(255, 255, 255, 0.2); }
+  &.photo-cell { background: photo-cell(); border: 2px solid rgba(255, 255, 255, 0.2); }
   &.empty-cell { background: rgba(20, 20, 30, 0.2); border: 1px dashed accent(0.1); }
 }
 

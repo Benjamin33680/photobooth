@@ -8,7 +8,7 @@ import { StripLayout } from '../../models/strip-layout.model';
 })
 export class StripPreviewComponent implements OnChanges {
   @Input() layout!: StripLayout;
-  @Input() bgColor = '#1a1a2e';
+  @Input() bgColor = '';
   @Input() bgImageUrl: string | null = null;
   @Input() logoBaseUrl = '';
 

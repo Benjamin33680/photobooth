@@ -67,8 +67,16 @@ export class SettingsComponent implements OnInit {
     this.tunnelQrCode = await QRCode.toDataURL(url, {
       width: 160,
       margin: 2,
-      color: { dark: '#e0e6ff', light: '#0d0d1a' },
+      color: this.qrColors(),
     });
+  }
+
+  private qrColors(): { dark: string; light: string } {
+    const s = getComputedStyle(document.body);
+    return {
+      dark:  s.getPropertyValue('--ph-qr-dark').trim()  || '#e0e6ff',
+      light: s.getPropertyValue('--ph-qr-light').trim() || '#0d0d1a',
+    };
   }
 
   setTheme(theme: Theme): void {

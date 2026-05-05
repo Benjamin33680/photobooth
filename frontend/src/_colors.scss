@@ -44,6 +44,10 @@
   @return unquote("rgb(var(--ph-glow-outer) / #{$alpha})");
 }
 
+@function photo-cell($alpha: 0.4) {
+  @return unquote("rgb(var(--ph-photo-cell) / #{$alpha})");
+}
+
 // Texte — 5 niveaux de lisibilité
 @function text-bright()    { @return unquote("rgb(var(--ph-text-bright))"); }
 @function text-primary()   { @return unquote("rgb(var(--ph-text-primary))"); }

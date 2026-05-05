@@ -47,7 +47,7 @@
   &:hover     { border-color: accent(0.4); }
   &.selected  { border-color: accent(); }
   &.logo-cell  { background: accent(0.08); color: accent(); }
-  &.photo-cell { background: rgba(30, 40, 80, 0.4); color: text-primary(); }
+  &.photo-cell { background: photo-cell(); color: text-primary(); }
   &.empty-cell { background: rgba(20, 20, 30, 0.3); color: accent(0.2); }
 }
 
