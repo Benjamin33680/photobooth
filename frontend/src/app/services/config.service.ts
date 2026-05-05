@@ -12,7 +12,7 @@ export class ConfigService {
     if (!port || port === '80' || port === '443') {
       return `${window.location.protocol}//${this.apiHost}`;
     }
-    return `http://${this.apiHost}:8000`;
+    return ''; // dev: proxy.conf.json forwards to localhost:8001
   }
 
   get wsUrl(): string {
@@ -21,6 +21,6 @@ export class ConfigService {
     if (!port || port === '80' || port === '443') {
       return `${wsProtocol}//${this.apiHost}`;
     }
-    return `ws://${this.apiHost}:8000`;
+    return `${wsProtocol}//${window.location.host}`; // dev: proxy forwards /api/camera/ws
   }
 }

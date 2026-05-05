@@ -1,0 +1,33 @@
+{
+  "/api": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true
+  },
+  "/photos": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/logos": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/backgrounds": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/archive-files": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/health": {
+    "target": "http://localhost:8001",
+    "secure": false,
+    "changeOrigin": true
+  }
+}

@@ -38,15 +38,21 @@ class CameraService:
         self._streaming = False
         self._stream_thread: Optional[threading.Thread] = None
 
+    @property
+    def _use_real_camera(self) -> bool:
+        return PICAMERA_AVAILABLE and not settings.CAMERA_MOCK
+
     # ------------------------------------------------------------------ #
     #  Lifecycle                                                           #
     # ------------------------------------------------------------------ #
 
     def initialize(self):
-        if PICAMERA_AVAILABLE:
+        if self._use_real_camera:
             self._init_real_camera()
+        elif settings.CAMERA_MOCK:
+            logger.info("Mock camera initialized (CAMERA_MOCK=true)")
         else:
-            logger.info("Mock camera initialized")
+            logger.info("Mock camera initialized (picamera2 unavailable)")
 
     def _init_real_camera(self):
         try:
@@ -67,7 +73,7 @@ class CameraService:
 
     def shutdown(self):
         self.stop_preview_stream()
-        if self._camera and PICAMERA_AVAILABLE:
+        if self._camera and self._use_real_camera:
             try:
                 self._camera.stop()
                 self._camera.close()
@@ -75,7 +81,7 @@ class CameraService:
                 pass
 
     def is_ready(self) -> bool:
-        if PICAMERA_AVAILABLE:
+        if self._use_real_camera:
             return self._camera is not None
         return True  # Mock mode is always ready
 
@@ -116,7 +122,7 @@ class CameraService:
             return base64.b64encode(self._latest_frame).decode("utf-8")
 
     def _grab_jpeg_frame(self) -> Optional[bytes]:
-        if PICAMERA_AVAILABLE and self._camera:
+        if self._use_real_camera and self._camera:
             try:
                 frame = self._camera.capture_array()
                 img = Image.fromarray(frame).transpose(Image.FLIP_LEFT_RIGHT)
@@ -135,7 +141,7 @@ class CameraService:
 
     async def capture_photo(self) -> Image.Image:
         """Capture a high-resolution still."""
-        if PICAMERA_AVAILABLE and self._camera:
+        if self._use_real_camera and self._camera:
             return await asyncio.to_thread(self._capture_hires)
         else:
             return self._generate_mock_photo()

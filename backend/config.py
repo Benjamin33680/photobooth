@@ -3,6 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # Camera
+    CAMERA_MOCK: bool = False
     CAMERA_WIDTH: int = 1920
     CAMERA_HEIGHT: int = 1080
     PREVIEW_WIDTH: int = 960

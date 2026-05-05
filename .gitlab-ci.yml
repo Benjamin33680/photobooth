@@ -1,18 +1,86 @@
 stages:
+  - security
+  - quality
+  - build
   - deploy
 
+# ─── Sécurité : SAST + vulnérabilités dépendances ────────────
+# Bloque le pipeline si une vulnérabilité critique est détectée.
+# Tourne sur develop ET main pour feedback avant merge.
+security:
+  stage: security
+  only:
+    - main
+    - develop
+  tags:
+    - photobooth-pi
+  before_script:
+    - test -d ~/ci-tools-venv || python3 -m venv ~/ci-tools-venv
+    - ~/ci-tools-venv/bin/pip install bandit pip-audit -q
+  script:
+    # Bandit — failles de sécurité dans le code Python (medium severity+)
+    - ~/ci-tools-venv/bin/bandit -r $CI_PROJECT_DIR/backend
+        --exclude $CI_PROJECT_DIR/backend/venv,$CI_PROJECT_DIR/backend/__pycache__
+        -ll -q
+    # pip-audit — CVE dans les dépendances Python
+    - ~/ci-tools-venv/bin/pip-audit -r $CI_PROJECT_DIR/backend/requirements.txt
+    # npm audit — CVE dans les dépendances frontend (bloque sur high+)
+    - cd $CI_PROJECT_DIR/frontend && npm audit --audit-level=high
+
+# ─── Qualité du code ──────────────────────────────────────────
+# Informatif uniquement — ne bloque pas le déploiement.
+quality:
+  stage: quality
+  only:
+    - main
+    - develop
+  tags:
+    - photobooth-pi
+  allow_failure: true
+  before_script:
+    - test -d ~/ci-tools-venv || python3 -m venv ~/ci-tools-venv
+    - ~/ci-tools-venv/bin/pip install flake8 -q
+  script:
+    # Flake8 — style et erreurs Python (ligne max 120 cars)
+    - ~/ci-tools-venv/bin/flake8 $CI_PROJECT_DIR/backend
+        --exclude=venv,__pycache__
+        --max-line-length=120
+        --count --statistics
+
+# ─── Build & vérification ─────────────────────────────────────
+build:
+  stage: build
+  only:
+    - main
+  tags:
+    - photobooth-pi
+  script:
+    # Vérification syntaxe Python
+    - python3 -m compileall $CI_PROJECT_DIR/backend -q
+    # Build Angular (erreurs TS/SCSS bloquent ici avant tout déploiement)
+    - cd $CI_PROJECT_DIR/frontend
+    - npm install --prefer-offline
+    - npm run build -- --configuration production
+  artifacts:
+    paths:
+      - frontend/dist/frontend
+    expire_in: 2 hours
+
+# ─── Déploiement (uniquement si tous les stages passent) ──────
 deploy:
   stage: deploy
   only:
     - main
   tags:
     - photobooth-pi
+  dependencies:
+    - build
   script:
-    - cd /home/benji/photobooth
+    # Mise à jour du code backend en prod
+    - cd /home/benji/photobooth-prod
     - git pull origin main
-    - cd frontend
-    - npm run build -- --configuration production --output-path dist/frontend-new
-    - rm -rf dist/frontend
-    - mv dist/frontend-new dist/frontend
+    # Remplacement atomique du frontend avec l'artifact buildé
+    - rsync -a --delete $CI_PROJECT_DIR/frontend/dist/frontend/ frontend/dist/frontend/
+    # Redémarrage des services
+    - sudo systemctl restart photobooth-backend.service
     - sudo systemctl reload nginx
-    - sudo reboot
